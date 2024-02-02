@@ -3,11 +3,11 @@ set -e
 
 # Defaults
 : ${GIT_URL:=https://github.com/monostream/emporium-docs.git}
-: ${BASE_PATH:=/}
+: ${BASE_PATH:=/docs}
 : ${POLL_INTERVAL:=60}
 
 # Configure nginx to serve files from base path
-echo 'server { listen 80; location $BASE_PATH { alias /usr/share/nginx/html; try_files $uri $uri/ =404; } }' > /etc/nginx/conf.d/default.conf
+echo "server { listen 80; location $BASE_PATH { alias /usr/share/nginx/html; try_files \$uri \$uri/ =404; } }" > /etc/nginx/conf.d/default.conf
 
 # Start nginx in the background
 nginx -g 'daemon off;' &
