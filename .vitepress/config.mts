@@ -5,6 +5,7 @@ export default withMermaid({
   title: 'Emporium Docs',
   description: 'A user-friendly, self-hosted platform that lets you deploy pre-configured apps and services in a snap.',
   base: '/docs/',
+  head: [['link', { rel: 'icon', href: '/favicon.ico' }]],
   themeConfig: {
     // https://vitepress.dev/reference/default-theme-config
     siteTitle: 'Emporium',
