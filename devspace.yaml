@@ -1,0 +1,41 @@
+version: v2beta1
+name: emporium-docs
+
+# This is a list of `pipelines` that DevSpace can execute (you can define your own)
+pipelines:
+  # You can run this pipeline via `devspace deploy` (or `devspace run-pipeline deploy`)
+  deploy:
+    run: |-
+      run_dependencies --all                            # 1. Deploy any projects this project needs (see "dependencies")
+      ensure_pull_secrets --all                         # 2. Ensure pull secrets
+      build_images --all -t $(date +"%Y%m%d%H%M%S")     # 3. Build, tag and push all images (see "images")
+      create_deployments --all                          # 4. Deploy Helm charts and manifests specfied as "deployments"
+
+images:
+  docs:
+    image: emporium.docker.pkg.emporium.rocks/docs
+    dockerfile: ./Dockerfile
+
+# This is a list of `deployments` that DevSpace can create for this project
+deployments:
+  emporium-docs:
+    # This deployment uses `helm` but you can also define `kubectl` deployments or kustomizations
+    helm:
+      chart:
+        name: component-chart
+        repo: https://charts.devspace.sh
+      values:
+        ingress:
+          tls: true
+          tlsClusterIssuer: letsencrypt-prod
+          annotations:
+            kubernetes.io/tls-acme: 'true'
+          rules:
+          - host: emporium.build
+            path: /docs
+            pathType: Prefix
+        containers:
+          - image: emporium.docker.pkg.emporium.rocks/docs
+        service:
+          ports:
+            - port: 80
