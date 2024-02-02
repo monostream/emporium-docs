@@ -4,7 +4,7 @@ layout: home
 
 hero:
   name: "Emporium"
-  text: "Let's get you down to speed."
+  text: "Let's get you up to speed."
   tagline: A user-friendly, self-hostable platform that lets you deploy pre-configured apps and services in a snap.
   image:
     src: /icon.svg
