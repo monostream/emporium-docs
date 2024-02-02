@@ -10,7 +10,7 @@ while true; do
     echo "New changes detected. Pulling updates and rebuilding docs..."
     git pull
     npm run build
-    cp -r /app/.vitepress/dist/* /usr/share/nginx/html/docs
+    cp -r /app/.vitepress/dist/* /usr/share/nginx/html/
     echo "Update completed."
   else
     echo "No changes detected."
