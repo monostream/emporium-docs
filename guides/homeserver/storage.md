@@ -2,6 +2,59 @@
 
 This guide outlines how to configure RAID 10 with LVM on Fedora and integrate the storage into Longhorn for Kubernetes use. It walks through installing essential packages, creating a RAID array, and managing logical volumes for improved performance and redundancy. It also details making the setup accessible in Longhorn, including setting up a dedicated StorageClass, to facilitate reliable and efficient storage solutions Kubernetes clusters.
 
+
+## Install Longhorn
+
+Add Helm repo:
+```bash
+helm repo add longhorn https://charts.longhorn.io
+```
+
+Example values:
+```bash
+defaultSettings:
+  backupTarget: s3://emporium-host-backup@auto/
+  backupTargetCredentialSecret: r2-credentials
+  createDefaultDiskLabeledNodes: null
+  defaultDataLocality: null
+  defaultDataPath: /data/longhorn
+  defaultReplicaCount: 2
+ingress:
+  annotations:
+    glass.monostream.com/enabled: "true"
+    kubernetes.io/tls-acme: "true"
+  enabled: true
+  host: longhorn.emporium.host
+  tls: true
+  tlsSecret: longhorn-tls
+persistence:
+  defaultClass: true
+  defaultClassReplicaCount: 2
+```
+
+Before installing Longhorn make sure that the directory specified under defaultDataPath actually exists on the host.
+
+When configuring the replica count, it's important to tailor the value to the number of nodes in your cluster. 
+In this example, the count is set to 2, matching a cluster of the same size. Adjust this setting to correspond with the capacity of your particular cluster environment.
+
+While enabling ingress is an option, it is advised to do so with caution. Ensure its security by placing an authentication proxy before it unless you have a specific reason and the necessary security measures in place.
+
+The configuration also includes an enabled backup feature that automates the process of uploading backups to an S3 bucket. This ensures data durability and aids in disaster recovery planning.
+
+```bash
+{
+  "AWS_ACCESS_KEY_ID": "AKIAIOSFODNN7EXAMPLE",
+  "AWS_ENDPOINTS": "https://s3.example.com",
+  "AWS_SECRET_ACCESS_KEY": "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY"
+}
+```
+
+Install:
+```bash
+kubectl create namespace longhorn-system
+helm install longhorn longhorn/longhorn --namespace longhorn-system -f values.yaml
+```
+
 ## Initializing Software RAID 10
 
 ::: tip
