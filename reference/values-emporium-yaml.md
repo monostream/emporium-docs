@@ -18,8 +18,8 @@ The table below provides an overview of the variables that are available within 
 | `.Emporium.Integrations.SMTP.ReplyTo`         | SMTP reply to email address, configured by the user in the Emporium UI.            |
 | `.Emporium.Integrations.OIDC.ClientID`        | OIDC client id from identity provider, automatically configured by Emporium .      |
 | `.Emporium.Integrations.OIDC.ClientSecret`    | OIDC client secret from identity provider, automatically configured by Emporium .  |
+| `.Emporium.Integrations.OIDC.ConfigurationEndpoint`          | OIDC configuration endpoint (aka. /.well-known/openid-configuration) from identity provider, automatically configured by Emporium .       |
 | `.Emporium.Integrations.OIDC.Issuer`          | OIDC issuer from identity provider, automatically configured by Emporium .         |
-| `.Emporium.Integrations.OIDC.Issuer`          | OIDC configuration endpoint (aka. /.well-known/openid-configuration) from identity provider, automatically configured by Emporium .       |
 | `.Emporium.UserSupplied.[your-variable-name]` | User-supplied values, specified by the [`@userSupplied` syntax](./user-supplied-syntax). |
 
 ## User Supplied Variables
