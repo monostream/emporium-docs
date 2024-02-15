@@ -53,7 +53,20 @@ export default withMermaid({
               },
               {
                 text: 'Storage',
-                link: '/guides/homeserver/storage'
+                link: '/guides/homeserver/storage',
+                collapsed: true,
+                items: [
+                  {
+                    {
+                      text: 'Longhorn',
+                      link: '/guides/homeserver/storage-longhorn.md'
+                    },
+                    {
+                      text: 'Jucie FS',
+                      link: '/guides/homeserver/storage-longhorn.md'
+                    }
+                  }
+                ]
               },
               {
                 text: 'Configure NVIDIA GPU node',
