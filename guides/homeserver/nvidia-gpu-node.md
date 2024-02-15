@@ -1,3 +1,5 @@
+# NVIDIA GPU Node
+
 This document outlines the process of enabling your k3s cluster to schedule GPU workloads and explains how to add a node with an Nvidia consumer graphics card.
 
 Nvidia provides a Kubernetes operator known as **NVIDIA GPU Operator** for this purpose. To ensure a Kubernetes cluster can execute GPU workloads, the following stack must be installed:
