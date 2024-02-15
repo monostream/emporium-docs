@@ -57,14 +57,12 @@ export default withMermaid({
                 collapsed: true,
                 items: [
                   {
-                    {
-                      text: 'Longhorn',
-                      link: '/guides/homeserver/storage-longhorn.md'
-                    },
-                    {
-                      text: 'Jucie FS',
-                      link: '/guides/homeserver/storage-longhorn.md'
-                    }
+                    text: 'Longhorn',
+                    link: '/guides/homeserver/storage-longhorn.md'
+                  },
+                  {
+                    text: 'Jucie FS',
+                    link: '/guides/homeserver/storage-longhorn.md'
                   }
                 ]
               },
