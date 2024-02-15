@@ -62,7 +62,7 @@ export default withMermaid({
                   },
                   {
                     text: 'Jucie FS',
-                    link: '/guides/homeserver/storage-longhorn.md'
+                    link: '/guides/homeserver/storage-juciefs.md'
                   }
                 ]
               },
