@@ -12,7 +12,7 @@ The following tags are available.
 | ---------------------------- | ----------------------------------------------------------------------------------------------------------- | -------- | ------- |
 | `@userSupplied [variable]`   | Identifies a variable as user-supplied. `[variable]` is the key name used in `.Emporium.UserSupplied` map.  | Yes      | ""      |
 | `@label [label]`             | Sets a label for the variable.                                                                              | No       | ""      |
-| `@type [type]`               | Sets the variable type.                                                                                     | No       | string  |
+| `@type [type]`               | Sets the variable type. Available are `{string, boolean, integer}`                                                                                   | No       | string  |
 | `@description [description]` | Sets a description for the variable.                                                                        | No       | ""      |
 | `@optional`                  | Indicates a user-supplied variable as optional. By default, all variables are required.                     | No       | false   |
 
@@ -32,3 +32,16 @@ authentication:
 ```
 
 On the install screen of the Emporium UI, users will se a text field with the label "Password" and a description text "Must be at least 10 characters long".
+
+
+```yaml emporium.values.yaml
+## @userSupplied RocketModeEnabled
+## @label RocketModeEnabled
+## @type boolean
+## @description Enable rocket mode if you want to moon
+authentication:
+  admin:
+    password: {{ .Emporium.UserSupplied.RocketModeEnabled }}
+```
+
+A checkbox is displayed on the install screen.
