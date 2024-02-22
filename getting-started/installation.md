@@ -36,7 +36,7 @@ The complete installation usually takes about 5 minutes.
 helm install emporium emporium -n emporium --version 0.2.1-rc.1 --repo https://emporium.helm.pkg.emporium.rocks  -f - << EOF
 panel:
   ingress:
-    hostname: "emporium.example.org"
+    host: "emporium.example.org"
 
 identity:
   authentik:
