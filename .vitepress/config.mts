@@ -61,10 +61,6 @@ export default withMermaid({
                     link: '/guides/homeserver/storage-longhorn.md'
                   },
                   {
-                    text: 'Local-Path',
-                    link: '/guides/homeserver/storage-localpath.md'
-                  },
-                  {
                     text: 'Jucie FS',
                     link: '/guides/homeserver/storage-juicefs.md'
                   }
