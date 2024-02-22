@@ -33,7 +33,7 @@ The complete installation usually takes about 5 minutes.
 :::
 
 ```sh
-helm install emporium emporium -n emporium --version 0.2.0-rc.3-13.g627f785-main --repo https://emporium.helm.pkg.emporium.rocks  -f - << EOF
+helm install emporium emporium -n emporium --version 0.2.1-rc.1 --repo https://emporium.helm.pkg.emporium.rocks  -f - << EOF
 panel:
   ingress:
     hostname: "emporium.example.org"
