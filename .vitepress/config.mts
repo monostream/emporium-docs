@@ -34,6 +34,7 @@ export default withMermaid({
           { text: '@userSupplied Syntax', link: '/reference/user-supplied-syntax' },
           {
             text: 'Integrations',
+            collapsed: true,
             items: [
               { text: 'DNS', link: '/reference/integrations/dns' },
               { text: 'OIDC', link: '/reference/integrations/oidc' },
@@ -80,8 +81,13 @@ export default withMermaid({
                 ]
               },
               {
-                text: 'Configure NVIDIA GPU node',
-                link: '/guides/homeserver/nvidia-gpu-node.md'
+                text: 'GPU Support',
+                items: [
+                  {
+                    text: 'NVIDIA',
+                    link: '/guides/homeserver/nvidia-gpu-node.md'
+                  },
+                ]
               },
             ]
           },
