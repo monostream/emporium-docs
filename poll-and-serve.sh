@@ -6,6 +6,11 @@ set -e
 : ${BASE_PATH:=/docs}
 : ${POLL_INTERVAL:=60}
 
+# Print configuration
+echo "GIT_URL: $GIT_URL"
+echo "BASE_PATH: $BASE_PATH"
+echo "POLL_INTERVAL: $POLL_INTERVAL"
+
 # Configure nginx to serve files from base path
 echo "server { listen 80; location $BASE_PATH { alias /usr/share/nginx/html; try_files \$uri \$uri/ =404; } }" > /etc/nginx/conf.d/default.conf
 
