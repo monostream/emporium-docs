@@ -4,23 +4,37 @@ At its heart, an app is a Helm chart that contains a unique `values.emporium.yam
 
 ## Available Variables
 
-The table below provides an overview of the variables that are available within `values.emporium.yaml`.
+This section lists all variables available within `values.emporium.yaml`.
 
-| Variable                                      | Description                                                                        |
-| --------------------------------------------- | ---------------------------------------------------------------------------------- |
-| `.Emporium.Name`                              | The name of the app instance, input by the user in the Emporium UI.                |
-| `.Emporium.Integrations.DNS.Hostname`         | Hostname for the application, input by the user in the Emporium UI.                |
-| `.Emporium.Integrations.SMTP.Host`            | SMTP hostname, configured by the user in the Emporium UI.                          |
-| `.Emporium.Integrations.SMTP.Port`            | SMTP port, configured by the user in the Emporium UI.                              |
-| `.Emporium.Integrations.SMTP.Username`        | SMTP username, configured by the user in the Emporium UI.                          |
-| `.Emporium.Integrations.SMTP.Password`        | SMTP password, configured by the user in the Emporium UI.                          |
-| `.Emporium.Integrations.SMTP.From`            | SMTP from email address, configured by the user in the Emporium UI.                |
-| `.Emporium.Integrations.SMTP.ReplyTo`         | SMTP reply to email address, configured by the user in the Emporium UI.            |
-| `.Emporium.Integrations.OIDC.ClientID`        | OIDC client id from identity provider, automatically configured by Emporium .      |
-| `.Emporium.Integrations.OIDC.ClientSecret`    | OIDC client secret from identity provider, automatically configured by Emporium .  |
-| `.Emporium.Integrations.OIDC.ConfigurationEndpoint`          | OIDC configuration endpoint (aka. /.well-known/openid-configuration) from identity provider, automatically configured by Emporium .       |
-| `.Emporium.Integrations.OIDC.Issuer`          | OIDC issuer from identity provider, automatically configured by Emporium .         |
-| `.Emporium.UserSupplied.[your-variable-name]` | User-supplied values, specified by the [`@userSupplied` syntax](./user-supplied-syntax). |
+| Variable                                            | Description                                                                              |
+| --------------------------------------------------- | ---------------------------------------------------------------------------------------- |
+| `.Emporium.Name`                                    | The name of the app instance, input by the user in the Emporium UI.                      |
+| `.Emporium.Annotations`                             | Annotations for ingresses, configured automatically by Emporium.                         |
+| `.Emporium.UserSupplied.[your-variable-name]`       | User-supplied values, specified by the [`@userSupplied` syntax](./user-supplied-syntax). |
+
+### DNS Integration
+
+The following variables are provided by the [DNS integration](./integrations/dns).
+
+<!--@include: ./integrations/dns-variables.md-->
+
+### OIDC Integration
+
+The following variables are provided by the [OIDC integration](./integrations/oidc).
+
+<!--@include: ./integrations/oidc-variables.md-->
+
+### Storage Integration
+
+The following variables are provided by the [storage integration](./integrations/storage).
+
+<!--@include: ./integrations/storage-variables.md-->
+
+### Email / SMTP Integration
+
+The following variables are provided by the [smtp integration](./integrations/smtp).
+
+<!--@include: ./integrations/smtp-variables.md-->
 
 ## User Supplied Variables
 

@@ -31,7 +31,16 @@ export default withMermaid({
         text: 'Reference',
         items: [
           { text: 'values.emporium.yaml File', link: '/reference/values-emporium-yaml' },
-          { text: '@userSupplied Syntax', link: '/reference/user-supplied-syntax' }
+          { text: '@userSupplied Syntax', link: '/reference/user-supplied-syntax' },
+          {
+            text: 'Integrations',
+            items: [
+              { text: 'DNS', link: '/reference/integrations/dns' },
+              { text: 'OIDC', link: '/reference/integrations/oidc' },
+              { text: 'Storage', link: '/reference/integrations/storage' },
+              { text: 'Email / SMTP', link: '/reference/integrations/smtp' },
+            ],
+          },
         ]
       },
       {
