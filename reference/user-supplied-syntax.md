@@ -10,11 +10,24 @@ The following tags are available.
 
 | Tag                          | Description                                                                                                 | Required | Default |
 | ---------------------------- | ----------------------------------------------------------------------------------------------------------- | -------- | ------- |
-| `@userSupplied [variable]`   | Identifies a variable as user-supplied. `[variable]` is the key name used in `.Emporium.UserSupplied` map.  | Yes      | ""      |
+| `@userSupplied [variable]`   | Identifies a variable as user-supplied. `[variable]` is the key  used in `.Emporium.UserSupplied` map.      | Yes      | ""      |
 | `@label [label]`             | Sets a label for the variable.                                                                              | No       | ""      |
-| `@type [type]`               | Sets the variable type. Available are `{string, boolean, integer}`                                                                                   | No       | string  |
+| `@type [type]`               | Sets the variable type. [Learn more](#type-tag).                                                            | No       | string  |
 | `@description [description]` | Sets a description for the variable.                                                                        | No       | ""      |
 | `@optional`                  | Indicates a user-supplied variable as optional. By default, all variables are required.                     | No       | false   |
+
+## `@type [type]` Tag {#type-tag}
+
+The `@type` tag specifies the variable type. Based on this type, the Emporium UI will render different input elements. The following options are available.
+
+| Type         | Default value | Rendered in UI                                                    |
+| ------------ | ------------- | ----------------------------------------------------------------- |
+| string       | ""            | ![Input field string](../img/input_type_string.png)               |
+| boolean      | false         | ![Input field boolean](../img/input_type_boolean.png)             |
+| integer      | 0             | ![Input field integer](../img/input_type_integer.png)             |
+| byteSize     | ""            | ![Input field byte size](../img/input_type_byte_size.png)         |
+| storageClass | ""            | ![Input field storage class](../img/input_type_storage_class.png) |
+
 
 ## Example
 
