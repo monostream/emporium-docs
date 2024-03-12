@@ -1,4 +1,6 @@
-# Initial Setup
+# Setup K3s with disk encryption
+
+In this tutorial we assume you have installed Fedora.
 
 ::: tip
 The IP address `172.16.16.1` used in this tutorial is an example. Replace it with the actual IP address of your server wherever it appears in the script.
@@ -6,7 +8,7 @@ The IP address `172.16.16.1` used in this tutorial is an example. Replace it wit
 
 Connect to your VM via SSH:
 ```bash
-ssh monostream@172.16.16.1
+ssh emporium@172.16.16.1
 ```
 
 Switch to root user:
@@ -75,9 +77,12 @@ Generate LUKS recovery key:
 ```bash
 systemd-cryptenroll --recovery-key /dev/nvme0n1p3
 ```
+Make sure to store the key somewhere safe!
 
 
-Disable FirewallD and SELinux:
+# Install K3s
+
+For the sake of simplicity we disable FirewallD and SELinux:
 ```bash
 systemctl disable firewalld.service
 systemctl stop firewalld.service
@@ -97,6 +102,7 @@ Install K3S with Cilium as CNI:
 ```bash
 sudo su -
 export KUBECONFIG=/etc/rancher/k3s/k3s.yaml
+export IP=172.16.16.1
 
 CILIUM_CLI_VERSION=$(curl -s https://raw.githubusercontent.com/cilium/cilium-cli/master/stable.txt)
 CLI_ARCH=amd64
@@ -108,19 +114,44 @@ rm -rf cilium-linux-${CLI_ARCH}.tar.gz{,.sha256sum}
 
 mkdir /data/k3s
 
-export INSTALL_K3S_EXEC="server --flannel-backend=none --disable-kube-proxy --disable-network-policy --disable-cloud-controller --disable=traefik --disable=servicelb --bind-address=172.16.16.1 --advertise-address=172.16.16.1 --data-dir=/data/k3s"
+export INSTALL_K3S_EXEC="server --flannel-backend=none --disable-kube-proxy --disable-network-policy --disable-cloud-controller --disable=traefik --disable=servicelb --bind-address=${IP} --advertise-address=${IP} --data-dir=/data/k3s"
 curl -sfL https://get.k3s.io | sh -
 
 # replace k8sServiceHost with the IP address of your control plane node
-cilium install --helm-set=k8sServiceHost=172.16.16.1,k8sServicePort=6443
+cilium install --helm-set=k8sServiceHost=${IP},k8sServicePort=6443
 cilium hubble enable --ui
 ```
+
+## Connect to the cluster
+
+The kubeconfig is located in `/etc/rancher/k3s/k3s.yaml`.
+Copy & paste it to your machine or copy it with scp (something like: `scp emporium@172.16.16.1:/etc/rancher/k3s/k3s.yaml ~/.kube/my-server.yaml`).
+
+Then you need to open the kubeconfig and replace the ip in the file with your favorit text editor or sed.
+```sed -i 's/127.0.0.1/172.16.16.1/g' ~/.kube/my-server.yaml```
+
+To test it you can do the following:
+
+```bash
+export KUBECONFIG=~/.kube/my-server.yaml
+
+kubectl get nodes
+```
+
+We recommend to merge the kubeconfig into the existing one.
+
+
+
+## Add a new node to the cluster
+
 
 Install K3S Agent Node and join it:
 ```bash
 # get join token from control plane node
 cat /data/k3s/server/node-token
+```
 
+```bash
 # install k3s agent
 export INSTALL_K3S_EXEC="agent --data-dir=/data/k3s"
 curl -sfL https://get.k3s.io | K3S_URL=https://172.16.16.1:6443 K3S_TOKEN={TOKEN} sh -
