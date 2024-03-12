@@ -24,7 +24,46 @@ While not strictly necessary, it's recommended to create a separate namespace fo
 kubectl create ns emporium
 ```
 
-# Install Helm Chart
+
+# Install with emp cli
+We recommend using the **emp cli** to install Emporium.
+
+Grab the **emp cli** with this command:
+
+```sh
+curl https://cli.emporium.build/ | sh
+```
+
+Execute **emp install** and follow the instructions:
+```sh
+➜  ~ emp install   
+✨ Cluster detected: supercluster
+✨ Selfsigned Cert Manager Issuer successfully applied
+✗ Is there an existing Authentik instance you wish to integrate with Emporium?: 
+What FQDN should be used to access Authentik? (e.g., id.example.org): id.emporium.hair
+What FQDN should be used for Emporium's access? (e.g., emporium.example.org): emporium.hair
+Which Kubernetes Namespace do you prefer for installing Emporium? (default: emporium): emporium
+Which Kubernetes Namespace do you prefer for installing Emporium? (default: emporium): emporium
+⏳ Installing Emporium on cluster supercluster. This might take a few minutes...
+✅ Emporium installation complete on supercluster.
+
+Access Emporium:
+
+Emporium URL: https://emporium.hair
+Authentik Username: akadmin
+Authentik Bootstrap Password: Z3i1alwkfU0OaM2PS4YDI42XkdHlYp3ro
+
+The 'akadmin' user is for initial testing only. Create a personal account or configure a social login for production use.
+Change the 'akadmin' password immediately after first login.
+
+You might encounter a temporary DNS error as the newly created domain resolves. Please wait a few minutes and try again.
+If you see an empty Emporium home screen, the installation is successful!
+Follow the Emporium Docs to add repositories: https://emporium.build/docs/guides/configure-repositories.html
+
+```
+
+
+# Install with Helm Chart
 
 To install Emporium, run the following command. Make sure to replace the hostnames with your own domains.
 
