@@ -132,6 +132,7 @@ Copy & paste it to your machine or copy it with scp (something like: `scp empori
 Then you need to open the kubeconfig and replace the ip in the file with your favorit text editor or sed.
 ```sed -i 's/127.0.0.1/172.16.16.1/g' ~/.kube/my-server.yaml```
 
+To connect to the cluster you must install kubeconfig. [See here how to install it](https://kubectl.docs.kubernetes.io/)
 To test it you can do the following:
 
 ```bash
@@ -140,8 +141,7 @@ export KUBECONFIG=~/.kube/my-server.yaml
 kubectl get nodes
 ```
 
-We recommend to merge the kubeconfig into the existing one.
-
+To understand how to handle kubeconfig [this article](https://kubernetes.io/docs/concepts/configuration/organize-cluster-access-kubeconfig/) helps.
 
 
 ## Add a new node to the cluster

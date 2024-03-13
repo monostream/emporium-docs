@@ -58,6 +58,10 @@ export default withMermaid({
                 link: '/guides/homeserver/overview'
               },
               {
+                text: 'Kubernetes intro',
+                link: '/guides/homeserver/kubernetes'
+              },
+              {
                 text: 'Initial Setup',
                 link: '/guides/homeserver/initial-setup'
               },
