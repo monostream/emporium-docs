@@ -62,21 +62,25 @@ export default withMermaid({
                 link: '/guides/homeserver/initial-setup'
               },
               {
+                text: 'Networking',
+                link: '/guides/homeserver/network-setup'
+              },
+              {
                 text: 'Storage',
                 link: '/guides/homeserver/storage',
                 collapsed: true,
                 items: [
                   {
                     text: 'Longhorn',
-                    link: '/guides/homeserver/storage-longhorn.md'
+                    link: '/guides/homeserver/storage-longhorn'
                   },
                   {
                     text: 'Local-Path',
-                    link: '/guides/homeserver/storage-localpath.md'
+                    link: '/guides/homeserver/storage-localpath'
                   },
                   {
                     text: 'Jucie FS',
-                    link: '/guides/homeserver/storage-juicefs.md'
+                    link: '/guides/homeserver/storage-juicefs'
                   }
                 ]
               },
@@ -85,7 +89,7 @@ export default withMermaid({
                 items: [
                   {
                     text: 'NVIDIA',
-                    link: '/guides/homeserver/nvidia-gpu-node.md'
+                    link: '/guides/homeserver/nvidia-gpu-node'
                   },
                 ]
               },
