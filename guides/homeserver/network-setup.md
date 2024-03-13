@@ -100,7 +100,7 @@ cloudflare-ddns-config.json
 ```
 
 cloudflare-ddns.yaml
-```
+```yaml
 apiVersion: apps/v1
 kind: Deployment
 metadata:
