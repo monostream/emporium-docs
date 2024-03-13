@@ -1,5 +1,6 @@
 # Setup K3s with disk encryption
 
+This are (incomplete) notes how to setup a K3s cluster.
 In this tutorial we assume you have installed Fedora.
 
 ::: tip
@@ -98,7 +99,9 @@ fs.inotify.max_user_watches = 1048576
 EOF
 ```
 
-Install K3S with Cilium as CNI:
+Install K3S with Cilium as CNI.
+Replace the IP with the IP of your node.
+
 ```bash
 sudo su -
 export KUBECONFIG=/etc/rancher/k3s/k3s.yaml
@@ -117,7 +120,6 @@ mkdir /data/k3s
 export INSTALL_K3S_EXEC="server --flannel-backend=none --disable-kube-proxy --disable-network-policy --disable-cloud-controller --disable=traefik --disable=servicelb --bind-address=${IP} --advertise-address=${IP} --data-dir=/data/k3s"
 curl -sfL https://get.k3s.io | sh -
 
-# replace k8sServiceHost with the IP address of your control plane node
 cilium install --helm-set=k8sServiceHost=${IP},k8sServicePort=6443
 cilium hubble enable --ui
 ```
