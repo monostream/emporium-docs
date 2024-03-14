@@ -2,29 +2,6 @@
 
 Follow this guide to install Emporium on your Kubernetes cluster using helm.
 
-## Prerequesites
-- Make sure you have [helm](https://helm.sh/docs/intro/install/) and [kubectl](https://kubernetes.io/docs/tasks/tools/) installed on your system.
-- [Cert manager](https://cert-manager.io/docs/installation/helm/) has to be installed and configured on your cluster. Make sure that the selfsigned ClusterIssuer is present.
-```sh
-kubectl apply -f - << EOF
-apiVersion: cert-manager.io/v1
-kind: ClusterIssuer
-metadata:
-  name: selfsigned
-spec:
-  selfSigned: {}
-EOF
-```
-
-## Create Namespace
-
-While not strictly necessary, it's recommended to create a separate namespace for Emporium.
-
-```sh
-kubectl create ns emporium
-```
-
-
 # Install with emp cli
 We recommend using the **emp cli** to install Emporium.
 
@@ -66,6 +43,30 @@ Follow the Emporium Docs to add repositories: https://emporium.build/docs/guides
 # Install with Helm Chart
 
 To install Emporium, run the following command. Make sure to replace the hostnames with your own domains.
+
+
+## Prerequesites
+- Make sure you have [helm](https://helm.sh/docs/intro/install/) and [kubectl](https://kubernetes.io/docs/tasks/tools/) installed on your system.
+- [Cert manager](https://cert-manager.io/docs/installation/helm/) has to be installed and configured on your cluster. Make sure that the selfsigned ClusterIssuer is present.
+```sh
+kubectl apply -f - << EOF
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+  name: selfsigned
+spec:
+  selfSigned: {}
+EOF
+```
+
+## Create Namespace
+
+While not strictly necessary, it's recommended to create a separate namespace for Emporium.
+
+```sh
+kubectl create ns emporium
+```
+
 
 ::: info
 The complete installation usually takes about 5 minutes.
@@ -134,3 +135,31 @@ It's recommended to change the password of `akadmin` after you logged in for the
 Once logged in, you should see an emplty Emporium home screen. If that is the case, you successfully installed Emporium.
 
 Congratulations! :tada:
+
+
+
+# Uninstallation
+
+Follow these steps to properly uninstall Emporium and all installed apps from your cluster.
+
+## Uninstalls Apps
+
+As the first step, make sure to uninstall all apps via Emporium UI before proceeding. Installed apps won't be automatically removed upon Emporium's uninstallation.
+
+## Helm Uninstall
+
+Run the following command to uninstall Emporium.
+
+```sh
+helm uninstall emporium -n emporium
+```
+
+::: info
+Make sure you replace the helm release name and namespace with values matching your installation.
+:::
+
+To completely get rid of all resources created by the Emporium helm chart, it's recommended to delete the corresponding namespace. You can do that by running the following command.
+
+```sh
+kubectl delete ns emporium
+```

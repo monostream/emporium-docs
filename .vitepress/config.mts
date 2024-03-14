@@ -25,7 +25,6 @@ export default withMermaid({
           { text: 'Emporium CLI', link: '/getting-started/emporium-cli' },
           { text: 'Configure Login Providers', link: '/getting-started/configuring-login-providers' },
           { text: 'Screenshots', link: '/getting-started/screenshots' },
-          { text: 'Uninstallation', link: '/getting-started/uninstallation' },
         ]
       },
       {
