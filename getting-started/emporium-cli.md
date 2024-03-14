@@ -2,8 +2,8 @@
 
 The **Emporium CLI** provides a suite of tools to enhance interaction a emporium instance and application lifecycle of emporium Apps:
 
-## Installation
-- **Emporium Setup:** Install Emporium on your Kubernetes cluster.
+## Emporium Setup
+- **Emporium installation:** Install Emporium on your Kubernetes cluster.
 - **Cluster Status:** View the status of your Empporium cluster.
 - **Local Tools:** Install necessary Kubernetes tools locally (kubectl, helm, git, etc.).
 

@@ -6,6 +6,11 @@ With its built-in automatic authentication, even applications lacking their own 
 
 Emporium can be seamlessly installed on your own Kubernetes cluster. By hosting it yourself, you maintain complete sovereignty over your data and applications. With Emporium, you're fully in control of your data and the apps you deploy.
 
+::: danger 
+
+**Disclaimer:** By installing Emporium, you acknowledge and accept that the process and its outcomes are solely your responsibility. Emporium is currently in its alpha stage and may contain bugs. We do not assume liability for any issues, data loss, or other adverse events that may occur. Use at your own risk.
+:::
+
 ![Emporium Home Screenshot](../img/home.jpg)
 
 ## Usecases
@@ -17,7 +22,7 @@ Emporium can be seamlessly installed on your own Kubernetes cluster. By hosting 
 
 ## Features
 
-- **Single-Click Installations:** Access our curated app collection for easy, one-click installations, streamlining your setup process.
+- **Single-Click Installations:** Access curated app collection for easy, one-click installations, streamlining your setup process.
 - **Unified Authentication:** Benefit from built-in authentication across all apps, bolstering security, even for those without native login features.
 - **App Launcher:** Utilize the app launcher for swift navigation between apps, improving efficiency and user experience.
 - **Custom App Integration:** Add your Helm repositories to install custom apps seamlessly through our interface.

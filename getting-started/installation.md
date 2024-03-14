@@ -2,6 +2,11 @@
 
 Follow this guide to install Emporium on your Kubernetes cluster using helm.
 
+::: danger 
+
+**Disclaimer:** By installing Emporium, you acknowledge and accept that the process and its outcomes are solely your responsibility. Emporium is currently in its alpha stage and may contain bugs. We do not assume liability for any issues, data loss, or other adverse events that may occur. Use at your own risk.
+:::
+
 # Install with emp cli
 We recommend using the **emp cli** to install Emporium.
 
