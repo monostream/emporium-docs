@@ -23,7 +23,6 @@ export default withMermaid({
           { text: 'Overview', link: '/getting-started/overview' },
           { text: 'Installation', link: '/getting-started/installation' },
           { text: 'Emporium CLI', link: '/getting-started/emporium-cli' },
-          { text: 'Configure Login Providers', link: '/getting-started/configuring-login-providers' },
           { text: 'Screenshots', link: '/getting-started/screenshots' },
         ]
       },
@@ -49,6 +48,7 @@ export default withMermaid({
         items: [
           { text: 'Configure Repositories', link: '/guides/configure-repositories' },
           { text: 'Add Your Own Apps', link: '/guides/add-your-own-apps' },
+          { text: 'Configure Login Providers', link: '/getting-started/configuring-login-providers' },
           {
             text: 'Homeserver Setup',
             collapsed: true,
