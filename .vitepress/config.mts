@@ -48,7 +48,7 @@ export default withMermaid({
         items: [
           { text: 'Configure Repositories', link: '/guides/configure-repositories' },
           { text: 'Add Your Own Apps', link: '/guides/add-your-own-apps' },
-          { text: 'Configure Login Providers', link: '/getting-started/configuring-login-providers' },
+          { text: 'Configure Login Providers', link: '/guides/configuring-login-providers' },
           {
             text: 'Homeserver Setup',
             collapsed: true,
