@@ -116,6 +116,10 @@ export default withMermaid({
       { icon: 'github', link: 'https://github.com/monostream/emporium' }
     ],
 
+    sitemap: {
+      hostname: 'https://emporium.build/docs'
+    },
+
     search: {
       provider: 'local'
     }
