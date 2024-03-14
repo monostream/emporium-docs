@@ -31,7 +31,7 @@ helm upgrade --install -n ${NETWORK_NAMESPACE} ingress ingress-nginx/ingress-ngi
 ```
 
 
-# Install External DNS, Cert-Manager, Cloudflare DDNS
+## Install External DNS, Cert-Manager, Cloudflare DDNS
 
 Stuff needed from Cloudflare:
 - Cloudflare Token with edit rights for the zone

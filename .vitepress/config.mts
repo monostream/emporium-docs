@@ -63,7 +63,7 @@ export default withMermaid({
               },
               {
                 text: 'Initial Setup',
-                link: '/guides/homeserver/initial-setup'
+                link: '/guides/homeserver/k3s-installation'
               },
               {
                 text: 'Networking',
@@ -71,20 +71,20 @@ export default withMermaid({
               },
               {
                 text: 'Storage',
-                link: '/guides/homeserver/storage',
+                link: '/guides/homeserver/storage/storage',
                 collapsed: true,
                 items: [
                   {
                     text: 'Longhorn',
-                    link: '/guides/homeserver/storage-longhorn'
+                    link: '/guides/homeserver/storage/storage-longhorn'
                   },
                   {
                     text: 'Local-Path',
-                    link: '/guides/homeserver/storage-localpath'
+                    link: '/guides/homeserver/storage/storage-localpath'
                   },
                   {
                     text: 'Jucie FS',
-                    link: '/guides/homeserver/storage-juicefs'
+                    link: '/guides/homeserver/storage/storage-juicefs'
                   }
                 ]
               },
