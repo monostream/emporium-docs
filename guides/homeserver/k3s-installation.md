@@ -81,6 +81,35 @@ systemd-cryptenroll --recovery-key /dev/nvme0n1p3
 Make sure to store the key somewhere safe!
 
 
+Create or modify the logrotate configuration to manage system logs better:
+
+```bash
+vi /etc/logrotate.d/rsyslog
+```
+
+Add the following configuration:
+```bash
+/var/log/messages {
+    rotate 7
+    daily
+    compress
+    missingok
+    notifempty
+    sharedscripts
+    postrotate
+        /bin/systemctl reload rsyslog.service > /dev/null 2>&1 || true
+    endscript
+}
+```
+
+Disable and stop the ABRT service to prevent automatic bug reporting:
+```bash
+systemctl disable abrtd && systemctl stop abrtd 
+rm -rf /var/spool/abrt*
+```
+
+Now that the system is updated, encrypted, and optimized, you can proceed to install K3s.
+
 # Install K3s
 
 For the sake of simplicity we disable FirewallD and SELinux:
