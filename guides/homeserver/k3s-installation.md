@@ -4,12 +4,12 @@ This are (incomplete) notes how to setup a K3s cluster.
 In this tutorial we assume you have installed Fedora.
 
 ::: tip
-The IP address `172.16.16.1` used in this tutorial is an example. Replace it with the actual IP address of your server wherever it appears in the script.
+The IP address `10.25.10.11` used in this tutorial is an example. Replace it with the actual IP address of your server wherever it appears in the script.
 :::
 
 Connect to your VM via SSH:
 ```bash
-ssh emporium@172.16.16.1
+ssh emporium@10.25.10.11
 ```
 
 Switch to root user:
@@ -134,7 +134,7 @@ Replace the IP with the IP of your node.
 ```bash
 sudo su -
 export KUBECONFIG=/etc/rancher/k3s/k3s.yaml
-export IP=172.16.16.1
+export IP=10.25.10.11
 
 CILIUM_CLI_VERSION=$(curl -s https://raw.githubusercontent.com/cilium/cilium-cli/master/stable.txt)
 CLI_ARCH=amd64
@@ -156,10 +156,10 @@ cilium hubble enable --ui
 ## Connect to the cluster
 
 The kubeconfig is located in `/etc/rancher/k3s/k3s.yaml`.
-Copy & paste it to your machine or copy it with scp (something like: `scp emporium@172.16.16.1:/etc/rancher/k3s/k3s.yaml ~/.kube/my-server.yaml`).
+Copy & paste it to your machine or copy it with scp (something like: `scp emporium@10.25.10.11:/etc/rancher/k3s/k3s.yaml ~/.kube/my-server.yaml`).
 
 Then you need to open the kubeconfig and replace the ip in the file with your favorit text editor or sed.
-```sed -i 's/127.0.0.1/172.16.16.1/g' ~/.kube/my-server.yaml```
+```sed -i 's/127.0.0.1/10.25.10.11/g' ~/.kube/my-server.yaml```
 
 To connect to the cluster you must install kubeconfig. [See here how to install it](https://kubectl.docs.kubernetes.io/)
 To test it you can do the following:
@@ -185,5 +185,5 @@ cat /data/k3s/server/node-token
 ```bash
 # install k3s agent
 export INSTALL_K3S_EXEC="agent --data-dir=/data/k3s"
-curl -sfL https://get.k3s.io | K3S_URL=https://172.16.16.1:6443 K3S_TOKEN={TOKEN} sh -
+curl -sfL https://get.k3s.io | K3S_URL=https://10.25.10.11:6443 K3S_TOKEN={TOKEN} sh -
 ```

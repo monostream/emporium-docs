@@ -13,12 +13,13 @@ Update IP-Pool in `metallb-pool.yaml`
 ```yaml
 spec:
   addresses:
-  - 192.168.1.222/32
+  - 10.25.10.101-10.25.10.119
 ```
 
 ```bash
 helm upgrade --install -n ${NETWORK_NAMESPACE} metallb bitnami/metallb --set fullnameOverride=metallb
 kubectl apply -f metallb-pool.yaml -n ${NETWORK_NAMESPACE}
+kubectl apply -f metallb-l2advertisements.yaml -n ${NETWORK_NAMESPACE}
 ```
 
 
@@ -216,5 +217,17 @@ metadata:
   name: default-pool
 spec:
   addresses:
-  - 192.168.1.222/32
+  - 10.25.10.101-10.25.10.119
+```
+
+metallb-l2advertisements.yaml
+```yaml
+apiVersion: metallb.io/v1beta1
+kind: L2Advertisement
+metadata:
+  name: l2-ip
+  namespace: network-system
+spec:
+  ipAddressPools:
+  - default-pool
 ```
