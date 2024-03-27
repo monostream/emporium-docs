@@ -36,7 +36,7 @@ The `@type` tag specifies the variable type. Based on this type, the Emporium UI
 ### String
 Here's an example for a variable named `AdminPassword`. This variable can be accessed within `values.emporium.yaml` as `.Emporium.UserSupplied.AdminPassword`.
 
-```yaml emporium.values.yaml
+```yaml values.emporium.yaml
 ## @userSupplied AdminPassword
 ## @label Password
 ## @type string
@@ -49,7 +49,7 @@ authentication:
 On the install screen of the Emporium UI, users will se a text field with the label "Password" and a description text "Must be at least 10 characters long".
 
 ### Boolean
-```yaml emporium.values.yaml
+```yaml values.emporium.yaml
 ## @userSupplied RocketModeEnabled
 ## @label RocketModeEnabled
 ## @type boolean
@@ -64,7 +64,7 @@ A checkbox is displayed on the install screen.
 
 ### String enum
 
-```yaml emporium.values.yaml
+```yaml values.emporium.yaml
 ## @userSupplied ServiceType
 ## @label Service Type
 ## @type string ["LoadBalancer", "NodePort"]
@@ -77,7 +77,7 @@ service:
 ### Integer enum
 
 
-```yaml emporium.values.yaml
+```yaml values.emporium.yaml
 ## @userSupplied MagicNumber
 ## @label MagicNumber
 ## @type integer [42, 69, 420]
@@ -88,7 +88,7 @@ magic:
 
 ### Storage Class & byteSize
 
-```yaml emporium.values.yaml
+```yaml values.emporium.yaml
 ## @userSupplied WorkdirSize
 ## @label Cache Directory Size
 ## @type byteSize
