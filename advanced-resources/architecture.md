@@ -1,6 +1,6 @@
 # Architecture
 
-Emporium's architecture is a testament to modern software design, leveraging a robust and loosely-coupled structure where each service is developed with a focused responsibility. This approach not only simplifies maintenance but also enhances the scalability and performance of the system. Below, we delve into the specifics of each component, their interactions, and the technologies that bring Emporium to life.
+Emporium is designed around a robust and loosely-coupled microservice architecture. This approach improves security and resilience by compartmentalization. Every service serves a distinct purpose, which drastically simplifies the complexity of the source code of each service, helping with maintainability and bug fixing. Below, we delve into the specifics of each component, their interactions, and the technologies that bring Emporium to life.
 
 ## Overview
 
@@ -10,9 +10,11 @@ Emporium's high-level architecture is a constellation of interconnected services
 
 ## Radar
 
-Radar, predominantly written in Go, is the vanguard of Emporium's application security. It employs an authentication proxy to safeguard the apps. This proxy is not just a static barrier but a dynamic entity, managed throughout its lifecycle by Radar.
+Radar, predominantly written in Go, configures, deploys and manages the Glass proxy in front of each ingress of an Emporium app instance. Radar manages this proxy throughout it's whole lifecycle, installing new versions of it and ensuring correct configuration. Under the hood, it uses helm to deploy and manage the proxies.
 
-The process flow of Radar delineates its operational strategy, detailing how it responds to ingress changes, manages the authentication proxy, and interacts with the identity provider. This includes intricate processes like the installation and uninstallation of the proxy, ensuring a seamless integration of security layers.
+As a [Kubernetes controller](https://kubernetes.io/docs/concepts/architecture/controller/) it tracks all changes done to ingress objects. Specifically to ones that contain Emporium-specific annotations or finalizers. Finalizers are used to indicate that Emporium has to clean up some resources, before deleting an ingress. For example, Radar adds the `emporium.build/release` finalizer to an ingress, indicating that a Glass proxy was deployed for the given ingress. Now, when that ingress is requested for deletion later in it's lifecycle, Radar will be notified (because the `metadata.deletionTimestamp` field is set on the ingress). It will then uninstall the proxy and all related resources. One that is accomplished, it will remove the finalizer, indicating the ingress can be safely deleted by Kubernetes.
+
+To configure the Glass proxy, Radar fetches the respective Emporium secret for an app. It then uses the OIDC and access configuration found within the secret to deploy the Glass proxy. If a proxy is already deployed, it ensures that the correct configuration is applied using. Because proxy configurations are continuously enforced, Radar will automatically upgrade proxies to new versions or migrate configurations if a new Emporium release is deployed on your cluster. At startup, every ingress on the cluster is passed once through the control-loop of Radar.
 
 ![Radar flow chart](../img/architecture.png)
 
