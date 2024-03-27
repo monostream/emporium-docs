@@ -14,10 +14,16 @@ The first are ingresses that contain the `emporium.build/app-name` annotation an
 
 The second case are ingresses that have the `emporium.build/app-name` annotation or any finalizer set. This might include ingresses that are marked for deletion or had the `emporium.build/app-name` annotation removed. In both cases the finalizers indicate that there is some cleanup to be done. For example, after deploying a Glass proxy for an ingress, Radar adds the `emporium.build/release` finalizer to it. Later in its lifecycle when that ingress is requested for deletion, Radar will be notified (because the [`metadata.deletionTimestamp` field is set](https://kubernetes.io/docs/concepts/overview/working-with-objects/finalizers/#how-finalizers-work) on the ingress). It will then uninstall the proxy and clean-up all related resources. Once cleaned up, it will remove the finalizer indicating the ingress can be safely deleted by Kubernetes.
 
-To configure the Glass proxy, Radar fetches the respective Emporium secret for an app. The name of the secret corresponds to the value of the `emporium.build/app-name` annotation suffixed with `-emporium`. It then uses the OIDC configuration found within the secret to deploy the Glass proxy. If a proxy is already deployed, it ensures that the correct configuration is applied. Because proxy configurations are continuously enforced, Radar will automatically upgrade proxies to new versions if a new Emporium release is deployed on your cluster. At startup, every ingress object on the cluster is passed once through the control-loop of Radar.
+To configure the Glass proxy, Radar fetches the respective Emporium secret for an app. The name of the secret corresponds to the value of the `emporium.build/app-name` annotation suffixed with `-emporium`. It then uses the OIDC configuration found within the secret to deploy the Glass proxy. If a proxy is already deployed, it ensures that the correct configuration is applied. Because proxy configurations are continuously enforced, Radar will automatically upgrade proxies to new versions if a new Emporium release is deployed on your cluster. At startup, every ingress object on the cluster is passed once through the control loop of Radar.
 
 ::: info TODO
 Should radar create new OIDC clients for ingresses / app instances that don't have one yet? This happens if a user manually (e.g. via kubectl) adds the `emporium.build/app-name` annotation to an ingress. When installing an app via panel UI, the OIDC client has to be created in reception, so the credentials can be passed to `values.emporium.yaml` for rendering the helm values.
+:::
+
+::: warn Idea — What if
+On app install, Radar would simply create a secret with all the normalized input provided by the user. This secret is then picked up by Builder. Builder notices that there is no OIDC config yet and creates the corresponding client. In the next iteration of the builder control loop (that was triggered by the previous change to the secret) it notices that there is no corresponding helm release to that config. It fetches the `values.emporium.yaml` from the db and renders it using the values and integration configs from the secret. The resulting values are passed to `helm install`.
+
+For ingresses where `emporium.build/app-name` was manually added, Radar would create the secret (without creating the OIDC client). Builder would then react to it and complete the same process as described above.
 :::
 
 ![Radar flow chart](../img/radar.png)
