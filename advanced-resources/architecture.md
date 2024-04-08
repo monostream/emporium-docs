@@ -20,7 +20,7 @@ To configure the Glass proxy, Radar fetches the respective Emporium secret for a
 Should radar create new OIDC clients for ingresses / app instances that don't have one yet? This happens if a user manually (e.g. via kubectl) adds the `emporium.build/app-name` annotation to an ingress. When installing an app via panel UI, the OIDC client has to be created in reception, so the credentials can be passed to `values.emporium.yaml` for rendering the helm values.
 :::
 
-::: warn Idea — What if
+::: tip Idea — What if
 On app install, Radar would simply create a secret with all the normalized input provided by the user. This secret is then picked up by Builder. Builder notices that there is no OIDC config yet and creates the corresponding client. In the next iteration of the builder control loop (that was triggered by the previous change to the secret) it notices that there is no corresponding helm release to that config. It fetches the `values.emporium.yaml` from the db and renders it using the values and integration configs from the secret. The resulting values are passed to `helm install`.
 
 For ingresses where `emporium.build/app-name` was manually added, Radar would create the secret (without creating the OIDC client). Builder would then react to it and complete the same process as described above.
