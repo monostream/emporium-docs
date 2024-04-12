@@ -74,6 +74,23 @@ If you are using TPM to unlock a LUKS encrypted device at boot, additional steps
 
 2. **Be Aware:** Ensure you are aware of the changes to PCR values and the specific device being encrypted. Incorrect values can prevent your system from unlocking the encrypted device at boot.
 
+# Keyboard switch shortcuts
+
+Manhattan KVM switches support shortcuts where ScrollLock + digit must be pressed two times...
+If you have a notebook with a reduced keyboard (like all macs) it is very hand to switch between the machines.
+
+Add those magic HTML lines to ``/usr/share/kvmd/web/kvm/index.html`` more or less at line 765 in the keyboard shorcut menue.
+
+```html
+<div class="buttons-row">
+   <button class="row50" data-force-hide-menu data-shortcut="ScrollLock ScrollLock ScrollLock ScrollLock Digit1">&bull; Screen 1</button>
+   <button class="row50" data-force-hide-menu data-shortcut="ScrollLock ScrollLock ScrollLock ScrollLock Digit2">&bull; Screen 2</button>
+</div>
+<div class="buttons-row">
+   <button class="row50" data-force-hide-menu data-shortcut="ScrollLock ScrollLock ScrollLock ScrollLock Digit3">&bull; Screen 3</button>
+   <button class="row50" data-force-hide-menu data-shortcut="ScrollLock ScrollLock ScrollLock ScrollLock Digit4">&bull; Screen 4</button>
+</div>
+```
 
 # Setup access via TOR
 
