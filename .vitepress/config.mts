@@ -97,6 +97,10 @@ export default withMermaid({
                   },
                 ]
               },
+              {
+                text: 'KVM Switch',
+                link: '/guides/homeserver/kvm-switch'
+              },
             ]
           },
           { text: 'Catalog', collapsed: true, items: [
