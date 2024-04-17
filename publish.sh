@@ -1,5 +1,5 @@
 # https://github.com/vuejs/vitepress/releases
-VERSION=1.0.0-rc.41
+VERSION=1.1.0
 REGISTRY=emporium-apps.docker.pkg.emporium.rocks
 TAG=${REGISTRY}/vitepress:${VERSION}
 
