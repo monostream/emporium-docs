@@ -39,7 +39,7 @@ Check for newer repository versions. At the time of writing, Fedora 39 is the mo
 
 ```bash
 sudo dnf upgrade --refresh -y
-sudo dnf config-manager --add-repo https://developer.download.nvidia.com/compute/cuda/repos/fedora37/x86_64/cuda-fedora37.repo
+sudo dnf config-manager --add-repo https://developer.download.nvidia.com/compute/cuda/repos/fedora39/x86_64/cuda-fedora39.repo
 sudo dnf install -y kernel-headers kernel-devel tar bzip2 make automake gcc gcc-c++ pciutils elfutils-libelf-devel libglvnd-opengl libglvnd-glx libglvnd-devel acpid pkgconfig dkms
 sudo dnf module install -y nvidia-driver:latest-dkms
 sudo reboot
