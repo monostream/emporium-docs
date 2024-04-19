@@ -212,13 +212,13 @@ version = 2
   SystemdCgroup = true
 ```
 
-## create magic symlink 
+## Create magic symlink 
 ```bash
 ln -s /sbin/ldconfig /sbin/ldconfig.real
 ```
 
 
-## check if nvidia /dev/ exists
+## Check if nvidia /dev/ exists
 
 you should  see the nvidia devices by running `ls /dev/nvid` and `ls -la /dev/char/ | grep '../nvidia'`.
 
