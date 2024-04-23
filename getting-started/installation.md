@@ -20,7 +20,6 @@ Execute **emp install** and follow the instructions:
 ```sh
 ➜  ~ emp install   
 ✨ Cluster detected: supercluster
-✨ Selfsigned Cert Manager Issuer successfully applied
 ✗ Is there an existing Authentik instance you wish to integrate with Emporium?: 
 What FQDN should be used to access Authentik? (e.g., id.example.org): id.emporium.hair
 What FQDN should be used for Emporium's access? (e.g., emporium.example.org): emporium.hair
@@ -52,17 +51,7 @@ To install Emporium, run the following command. Make sure to replace the hostnam
 
 ## Prerequesites
 - Make sure you have [helm](https://helm.sh/docs/intro/install/) and [kubectl](https://kubernetes.io/docs/tasks/tools/) installed on your system.
-- [Cert manager](https://cert-manager.io/docs/installation/helm/) has to be installed and configured on your cluster. Make sure that the selfsigned ClusterIssuer is present.
-```sh
-kubectl apply -f - << EOF
-apiVersion: cert-manager.io/v1
-kind: ClusterIssuer
-metadata:
-  name: selfsigned
-spec:
-  selfSigned: {}
-EOF
-```
+- [Cert manager](https://cert-manager.io/docs/installation/helm/) has to be installed and configured on your cluster. 
 
 ## Create Namespace
 
