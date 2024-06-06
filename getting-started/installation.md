@@ -67,26 +67,27 @@ The complete installation usually takes about 5 minutes.
 :::
 
 ```sh
-helm install emporium emporium -n emporium --repo https://emporium.helm.pkg.emporium.rocks  -f - << EOF
+helm install emporium emporium -n emporium --repo https://emporium.helm.pkg.emporium.rocks -f - << EOF
 panel:
   ingress:
-    host: "emporium.example.org"
-
+    host: "emporium.build"
+releaseChannel: "stable"
 identity:
   authentik:
-    host: "id.example.org"
+    host: "id.emporium.build"
 
 authentik:
-  ingress:
-    hosts:
-    - host: "id.example.org"
+  server:
+    ingress:
+      hosts:
+      - id.emporium.build
+      pathType: Prefix
       paths:
-      - path: /
-        pathType: Prefix
-    tls:
-    - hosts:
-      - "id.example.org"
-      secretName: authentik-tls
+      - /
+      tls:
+      - hosts:
+        - id.emporium.build
+        secretName: authentik-tls
 EOF
 ```
 
