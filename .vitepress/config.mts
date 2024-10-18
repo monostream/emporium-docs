@@ -103,6 +103,7 @@ export default withMermaid({
               },
             ]
           },
+          { text: 'Hetzner Kubernetes', link: '/guides/hetzner' },
           { text: 'Catalog', collapsed: true, items: [
             { text: 'Overview', link: '/guides/catalog/overview' },
           ]}
