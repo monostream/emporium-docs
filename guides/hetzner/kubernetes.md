@@ -102,7 +102,7 @@ module "kube-hetzner" {
 
   system_upgrade_use_drain = true
 
-  cluster_name = "monocloud"
+  cluster_name = "emporium"
 
   cni_plugin          = "cilium"
   cilium_version      = "1.15.1"
