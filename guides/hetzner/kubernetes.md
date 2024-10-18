@@ -5,7 +5,6 @@ This guide sets up a resilient, production-grade Kubernetes cluster with HA, aut
 ## Create a Read-Write Hetzner API Token  
    - Go to your Hetzner account and create a token with Read-Write access to manage resources.
 
----
 
 ## Generate an SSH Key Pair  
    - Run the following command to create a new SSH key pair:
@@ -14,7 +13,6 @@ This guide sets up a resilient, production-grade Kubernetes cluster with HA, aut
      ```
    - Follow the prompts to save the key.
 
----
 
 ## Bootstrap the `kube.tf` File  
    - Use this script to create and configure the `kube.tf` Terraform file:
@@ -22,12 +20,10 @@ This guide sets up a resilient, production-grade Kubernetes cluster with HA, aut
      tmp_script=$(mktemp) && curl -sSL -o "${tmp_script}" https://raw.githubusercontent.com/kube-hetzner/terraform-hcloud-kube-hetzner/master/scripts/create.sh && chmod +x "${tmp_script}" && "${tmp_script}" && rm "${tmp_script}"
      ```
 
----
 
 ## Modify the `kube.tf` File  
    - Open the generated `kube.tf` and adjust the configurations according to your project's needs (e.g., node sizes, region, etc.). Below is an example configuration for a highly-available (HA) Kubernetes setup.
 
----
 
 ### Example `kube.tf` for HA Setup  
 This configuration defines an HA cluster on Hetzner, using multiple control planes in different data centers for redundancy.
@@ -184,7 +180,6 @@ Explanation:
 - DNS Servers:  
   The cluster is configured to use Cloudflare's and Google's public DNS servers, ensuring reliable domain resolution.
 
----
 
 ## Initialize and Apply Terraform  
    - Initialize your Terraform workspace and apply the changes:
@@ -194,7 +189,6 @@ Explanation:
      terraform apply -auto-approve
      ```
 
----
 
 ## Wait for Cluster Bootstrap  
    - After a few minutes, all components should be fully deployed in your Hetzner project. The `kubeconfig` file will be generated in the same directory as `kube.tf`.
