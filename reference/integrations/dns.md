@@ -18,8 +18,8 @@ During the installation of a DNS enabled app, Emporium will:
 
 ## Glass {#glass}
 
-Glass is the secret hero behind the scenes of Emporium. It's a state of the art layer 7 proxy supporting OIDC authentication and authorization.
-Additionally it injects the Emporium Panel overlay into the all apps, enabling you to effortlessly navigate between them.
+Glass is the secret hero behind the scenes of Emporium. It's a state-of-the-art layer 7 proxy supporting OIDC authentication and authorization.
+Additionally, it injects the Emporium Panel overlay into all the apps, enabling you to effortlessly navigate between them.
 
 ## Example
 

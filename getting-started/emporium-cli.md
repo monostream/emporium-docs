@@ -1,30 +1,20 @@
-# Empporium CLI
+# Emporium CLI
 
-The **Emporium CLI** provides a suite of tools to enhance interaction a emporium instance and application lifecycle of emporium Apps:
+The **Emporium CLI** provides a suite of tools to enhance interactions with Emporium instances and application lifecycle of Emporium Apps:
 
 ## Emporium Setup
 - **Emporium installation:** Install Emporium on your Kubernetes cluster.
-- **Cluster Status:** View the status of your Empporium cluster.
+- **Cluster Status:** View the status of your Emporium cluster.
 - **Local Tools:** Install necessary Kubernetes tools locally (kubectl, helm, git, etc.).
 
 ## Emporium App Lifecycle Management
 - **Check and Update Dependencies:** Easily check and update dependencies. Can be integrated with build pipelines for automatic application updates.
-- **Scaffold Apps:** Assists in getting started with your custom emporium applications.
+- **Scaffold Apps:** Assists in getting started with your custom Emporium applications.
 
 ## Cluster Operations & Development
 - **Catapult:** Proxy services within the cluster.
 - **Debug-Node:** Launch a pod on a specified node with full access to host namespaces and filesystem.
 - **Tunnel:** Establish a network tunnel within the cluster (default: 10.0.0.0/8).
-
-
-
-## Installation
-
-On Linux and macOS it can be installed with the following command.
-
-
-
-
 
 ## Installation
 
@@ -35,7 +25,7 @@ Install the CLI with the following command:
 curl https://cli.emporium.build/ | sh
 ```
 
-Installation with homebrew and chocolatery is planned, but not available yet.
+Installation with homebrew and chocolatery is planned, but not yet available.
 
 ### Windows
 For most cases, using WSL2 is recommended.

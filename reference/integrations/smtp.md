@@ -8,7 +8,7 @@ The following variables are available to use within the [`values.emporium.yaml`]
 
 <!--@include: ./smtp-variables.md-->
 
-## Configuring STMP
+## Configuring SMTP
 
 Users can configure SMTP configs within the settings of the Emporium UI.
 Credentials configured there can then be selected for apps that request an SMTP configuration.

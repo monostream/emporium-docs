@@ -2,7 +2,7 @@
 
 An App is a Helm chart that has been preconfigured with a distinctive [`values.emporium.yaml` file](../reference/values-emporium-yaml).
 
-This file interfaces with Emporium and facilitates dynamic UI rendering based on necessary configuration variables. Here's a comprehensive guide to help you get your app ready for the Emporium.
+This file interfaces with Emporium and facilitates dynamic UI rendering based on necessary configuration variables. Here's a comprehensive guide to help you get your app ready for Emporium.
 
 ## 1. Helm Chart Creation
 Before you begin, ensure you have the Helm CLI installed. Follow the [official documentation](https://helm.sh/docs/intro/install/) to install Helm on your system.
@@ -64,7 +64,7 @@ Since our app is merely a metadata-wrapper for the dependency and doesn't have i
 
 ## 3. Add `values.emporium.yaml`
 
-Create a new file named `<app-name>/values.emporium.yaml`. This file serves as a template for the values passed into helm install by Emporium. The file must contain all values required by the dependency chart, and the structure must align with the `values.yaml` file of the dependency chart.
+Create a new file named `<app-name>/values.emporium.yaml`. This file serves as a template for the values passed into Helm install by Emporium. The file must contain all values required by the dependency chart, and the structure must align with the `values.yaml` file of the dependency chart.
 
 ```yaml values.emporium.yaml
 <dependency-name>:
@@ -73,7 +73,7 @@ Create a new file named `<app-name>/values.emporium.yaml`. This file serves as a
   logLevel: debug
 ```
 
-You may also use special template variables provided by Emporium. Check out the [`values.emporium.yaml` File](../reference/values-emporium-yaml.md) documentation for the full reference.
+You may also use special template variables provided by Emporium. Check out the [`values.emporium.yaml`](../reference/values-emporium-yaml.md) documentation for the full reference.
 
 Here's an example how an ingress configuration might look like.
 
@@ -129,7 +129,7 @@ The syntax for allowing users to pass `admin.username` and `admin.password` valu
     username: {{ .Emporium.UserSupplied.AdminUsername }}
     password: {{ .Emporium.UserSupplied.AdminPassword }}
 ```
-Note the `##` at the beginning. For a full syntax guide, refer to the [`@userSupplied` Syntax](../reference/user-supplied-syntax) documenation.
+Note the `##` at the beginning. For a full syntax guide, refer to the [`@userSupplied` Syntax](../reference/user-supplied-syntax) documentation.
 
 ## 4. Adding Metadata (Optional)
 
@@ -154,7 +154,7 @@ To ensure an optimal user experience, we recommend populating these fields.
 
 Emporium ships with a powerful OIDC integration. The OIDC protocol will forward users to the identity provider to log in (Authentik in the case of Emporium). After a successful login, users will be redirected back to the application to a so-called callback or redirect URL.
 
-Since redirect URLs are application-specific, you have to tell Emporium where it should redirect your users, after a sucessful OIDC login. Use the `oidcRedirectPaths` field in the `annotations` of the `Chart.yaml` file for that.
+Since redirect URLs are application-specific, you have to tell Emporium where it should redirect your users, after a successful OIDC login. Use the `oidcRedirectPaths` field in the `annotations` of the `Chart.yaml` file for that.
 
 ```yaml Chart.yaml
 # ...

@@ -51,7 +51,7 @@ K3s reapplies its state from the manifests directory. Currently only DEFAULT_PAT
 As a workaround, you will have to create a [skip file](https://docs.k3s.io/installation/packaged-components#disabling-manifests) for local-path-provisioner in your manifests directory.
 
 PVC created with the defined storage class (`mynode01-hdd0`) will create a PV on the node (`mynode01`).
-On the disk in the path definde in nodePath (`/storage/`) a new folder is created, named like this `/storage/pvc-10c4df9c-4fef-49be-ad75-17f626c6de38_mynamespace_test-pvc`.
+On the disk in the path defined in nodePath (`/storage/`) a new folder is created, named like this `/storage/pvc-10c4df9c-4fef-49be-ad75-17f626c6de38_mynamespace_test-pvc`.
 
 **An important side effect: the POD using such a PV is scheduled on the node defined in the storage class!**
 This can be very useful if you have deployments that share one volume with each other!

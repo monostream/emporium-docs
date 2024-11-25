@@ -18,12 +18,12 @@ Links:
 [Manhattan Switches](https://manhattanproducts.eu/collections/kvm-switches)
 
 
-When buying Manhattan KVM and PiKVM, note: Manhattan includes a exampel USB cable but not HDMI; PiKVM needs a separate USB-C to USB-A cable and a power supply, etc.
+When buying Manhattan KVM and PiKVM, note: Manhattan includes an example USB cable but not HDMI; PiKVM needs a separate USB-C to USB-A cable and a power supply, etc.
 
 
 
 # Setup
-We don't describe the setup here. To setup the KVM switch is a no brainer and PiKVM has an excellent documentation.
+We don't describe the setup here. To set up the KVM switch is a no-brainer and PiKVM has an excellent documentation.
 But we encountered two Problems:
 
 ## Solve not working keyboard
@@ -34,7 +34,7 @@ But we encountered two Problems:
 1. **Access BIOS Settings:** Restart your Intel NUC and enter the BIOS setup. This is typically done by pressing the F2 key during the boot process.
 2. **Disable TPM:** Locate the TPM settings within the BIOS menu and disable it. Disabling TPM helps avoid conflicts that might prevent the KVM switch from being recognized correctly.
 
-#### Configure the System to Ignore Conflicting Modules
+#### Configure the System to Ignore Conflicting Modules
 
 Some KVM switches are detected as a Logitech device, which leads to the automatic loading of the `hid_logitech_dj` module. This module can cause operational issues our case
 
@@ -95,7 +95,7 @@ Add those magic HTML lines to ``/usr/share/kvmd/web/kvm/index.html`` more or les
 # Setup access via TOR
 
 To use PiKVM as last resort access your system TOR might be an option to avoid reliance DNS, other Infrastructure or services like tailscale.
-As long as PiKVM has internet TOR should be a reliable option to expose the WebInterface but it might also be a very stupid idea.
+As long as PiKVM has internet TOR should be a reliable option to expose the WebInterface, but it might also be a very stupid idea.
 
 ```bash
 sudo pacman -Sy tor
@@ -125,4 +125,4 @@ Get your onion address:
 sudo cat /var/lib/tor/pikvm_hidden_service/hostname
 ````
 
-With this address you can connect with a TOR browser (eg. Brave) to your KVM.
+With this address you can connect with a TOR browser (e.g. Brave) to your KVM.

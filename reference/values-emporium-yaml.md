@@ -32,7 +32,7 @@ The following variables are provided by the [storage integration](./integrations
 
 ### Email / SMTP Integration
 
-The following variables are provided by the [smtp integration](./integrations/smtp).
+The following variables are provided by the [SMTP integration](./integrations/smtp).
 
 <!--@include: ./integrations/smtp-variables.md-->
 
@@ -46,7 +46,7 @@ Check out the [`@userSupplied` documentation](./user-supplied-syntax) for a more
 ## Integrations
 
 Emporium discovers automatically which integrations an app references in it's `values.emporium.yaml` file.
-It will render the install screen based on the used integrations and ´@userSupplied´ values.
+It will render the installation screen based on the used integrations and ´@userSupplied´ values.
 
 For example, if an app uses the SMTP / Email integration, Emporium will render a dropdown menu where users can select an email account.
 

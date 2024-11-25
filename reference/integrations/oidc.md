@@ -26,11 +26,11 @@ The OIDC client created is the same that is used by the [DNS integration](./dns)
 
 OIDC compatible applications always have a specific path where they want the user to be redirected after having authenticated with the identity provider.
 
-Since this path is specific for every app, it can be specified in the `oidcRedirectPaths` annotation of the helm chart of the app. See the [example below](#example). This is the job of the publisher of an Emporium app. Users usually don't have to worry about it.
+Since this path is specific for every app, it can be specified in the `oidcRedirectPaths` annotation of the Helm chart of the app. See the [example below](#example). This is the job of the publisher of an Emporium app. Users usually don't have to worry about it.
 
 ## Example {#example}
 
-The publisher of an Emporium app specifies the redirect path in the `Chart.yaml` of the helm chart.
+The publisher of an Emporium app specifies the redirect path in the `Chart.yaml` of the Helm chart.
 
 ```yaml
 # ...

@@ -39,11 +39,7 @@ kubectl apply -f metallb-pool.yaml -n ${NETWORK_NAMESPACE}
 kubectl apply -f metallb-l2advertisements.yaml -n ${NETWORK_NAMESPACE}
 ```
 
-
-
-
 ## Install Ingress-Nginx
-
 
 ingress-values.yaml
 ```yaml
@@ -91,7 +87,7 @@ Stuff needed from Cloudflare:
 Update:
 - cloudflare-ddns.yaml
 - cluster-issuer.yaml
-- external-dns-vlaues.yaml
+- external-dns-values.yaml
 
 ```bash
 kubectl create secret generic cloudflare-secret --from-literal=cloudflare_api_token=<your-cloudflare-api-key> -n ${NETWORK_NAMESPACE}

@@ -59,7 +59,7 @@ authentication:
     password: {{ .Emporium.UserSupplied.RocketModeEnabled }}
 ```
 
-A checkbox is displayed on the install screen.
+A checkbox is displayed on the installation screen.
 
 
 ### String enum
@@ -82,7 +82,7 @@ service:
 ## @label MagicNumber
 ## @type integer [42, 69, 420]
 magic:
-  number: {{ default 69 .Emporium.UserSupplied.## @userSupplied MagicNumber
+  number: {{ default 69 .Emporium.UserSupplied.MagicNumber
  }}
 ```
 

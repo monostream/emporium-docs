@@ -115,7 +115,7 @@ Node Feature Discovery (NFD) is a dependency for the Operator on each node. By d
 kubectl get nodes -o json | jq '.items[].metadata.labels | keys | any(startswith("feature.node.kubernetes.io"))'
 ```
 
-Add the helm repo:
+Add the Helm repo:
 ```bash
 helm repo add nvidia https://helm.ngc.nvidia.com/nvidia \
     && helm repo update

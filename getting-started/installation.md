@@ -1,16 +1,16 @@
 # Installation
 
-Follow this guide to install Emporium on your Kubernetes cluster using helm.
+Follow this guide to install Emporium on your Kubernetes cluster using Helm.
 
 ::: danger 
 
 **Disclaimer:** By installing Emporium, you acknowledge and accept that the process and its outcomes are solely your responsibility. Emporium is currently in its alpha stage and may contain bugs. We do not assume liability for any issues, data loss, or other adverse events that may occur. Use at your own risk.
 :::
 
-# Install with emp cli
-We recommend using the **emp cli** to install Emporium.
+# Install with Emporium CLI
+We recommend using the **Emporium CLI** to install Emporium.
 
-Grab the **emp cli** with this command:
+Grab the **Emporium CLI** with this command:
 
 ```sh
 curl https://cli.emporium.build/ | sh
@@ -21,16 +21,15 @@ Execute **emp install** and follow the instructions:
 ➜  ~ emp install   
 ✨ Cluster detected: supercluster
 ✗ Is there an existing Authentik instance you wish to integrate with Emporium?: 
-What FQDN should be used to access Authentik? (e.g., id.example.org): id.emporium.hair
-What FQDN should be used for Emporium's access? (e.g., emporium.example.org): emporium.hair
-Which Kubernetes Namespace do you prefer for installing Emporium? (default: emporium): emporium
+What FQDN should be used to access Authentik? (e.g., id.example.org): id.emporium.app
+What FQDN should be used for Emporium's access? (e.g., emporium.example.org): emporium.app
 Which Kubernetes Namespace do you prefer for installing Emporium? (default: emporium): emporium
 ⏳ Installing Emporium on cluster supercluster. This might take a few minutes...
 ✅ Emporium installation complete on supercluster.
 
 Access Emporium:
 
-Emporium URL: https://emporium.hair
+Emporium URL: https://emporium.app
 Authentik Username: akadmin
 Authentik Bootstrap Password: Z3i1alwkfU0OaM2PS4YDI42XkdHlYp3ro
 
@@ -92,16 +91,16 @@ EOF
 ```
 
 ::: tip Already have an Authentik instance?
-By default, the Emporium helm chart comes bundeled with an Authentik instance for identity management.
+By default, the Emporium Helm chart comes bundeled with an Authentik instance for identity management.
 
 If you want to connect to a different Authentik instance, you can disable the included instance by setting `authentik.enabled` to `false`.
 
-Then set the `identity.authentik.hostname` and `identity.authentik.token` variables.
+Then set the `identity.authentik.host` and `identity.authentik.token` variables.
 :::
 
 ## Verify Installation
 
-After the installation suceeds, helm will print out the URLs where your fresh Emporium instance will be accessible.
+After the installation suceeds, Helm will print out the URLs where your fresh Emporium instance will be accessible.
 
 ```text {3}
 ...
@@ -150,10 +149,10 @@ helm uninstall emporium -n emporium
 ```
 
 ::: info
-Make sure you replace the helm release name and namespace with values matching your installation.
+Make sure you replace the Helm release name and namespace with values matching your installation.
 :::
 
-To completely get rid of all resources created by the Emporium helm chart, it's recommended to delete the corresponding namespace. You can do that by running the following command.
+To completely get rid of all resources created by the Emporium Helm chart, it's recommended to delete the corresponding namespace. You can do that by running the following command.
 
 ```sh
 kubectl delete ns emporium

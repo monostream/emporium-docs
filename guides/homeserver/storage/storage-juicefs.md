@@ -1,6 +1,6 @@
 # JuiceFS
 
-This guide outlines how to setup an external S3 storage to be consumed in Kubernetes via JuiceFS. 
+This guide outlines how to set up an external S3 storage to be consumed in Kubernetes via JuiceFS. 
 
 In this simplified example a MinIO is installed inside the Cluster using local-path and a very basic Redis installation for the Metadata engine.
 
@@ -102,7 +102,7 @@ helm upgrade --install -n juicefs minio minio/minio -f minio.yaml
 
 ## Install Redis
 
-Standalone Redis installation helm values:
+Standalone Redis installation Helm values:
 
 ```yaml
 architecture: standalone
@@ -126,7 +126,7 @@ helm upgrade --install -n juicefs redis bitnami/redis -f redis.yaml
 
 ## Install JuiceFS
 
-Basic JuiceFS installation helm values:
+Basic JuiceFS installation Helm values:
 
 ```yaml
 node:
