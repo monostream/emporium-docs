@@ -1,15 +1,20 @@
 {
+  "private": true,
+  "type": "module",
   "scripts": {
     "dev": "vitepress dev",
     "build": "vitepress build",
     "preview": "vitepress preview"
   },
   "devDependencies": {
-    "mermaid": "^10.9.0",
-    "vitepress": "^1.1.0",
-    "vitepress-plugin-mermaid": "^2.0.16"
+    "mermaid": "^11.17.2",
+    "vitepress": "^1.6.4",
+    "vitepress-plugin-mermaid": "^2.0.17"
   },
   "engines": {
     "node": ">=20.0.0"
+  },
+  "overrides": {
+    "katex": "^0.19.0"
   }
 }

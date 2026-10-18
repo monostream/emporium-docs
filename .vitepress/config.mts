@@ -5,7 +5,11 @@ export default withMermaid({
   title: 'Emporium Docs',
   description: 'A user-friendly, self-hosted platform that lets you deploy pre-configured apps and services in a snap.',
   base: '/docs/',
-  head: [['link', { rel: 'icon', href: '/favicon.ico' }]],
+  // head entries are not base-aware, so the icon path carries /docs/ itself.
+  head: [['link', { rel: 'icon', href: '/docs/favicon.ico' }]],
+  sitemap: {
+    hostname: 'https://emporium.build/docs/'
+  },
   themeConfig: {
     // https://vitepress.dev/reference/default-theme-config
     siteTitle: 'Emporium',
@@ -120,10 +124,6 @@ export default withMermaid({
     socialLinks: [
       { icon: 'github', link: 'https://github.com/monostream/emporium' }
     ],
-
-    sitemap: {
-      hostname: 'https://emporium.build/docs'
-    },
 
     search: {
       provider: 'local'
