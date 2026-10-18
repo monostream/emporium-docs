@@ -1,0 +1,17 @@
+{{- if .Values.referenceGrant.enabled }}
+apiVersion: gateway.networking.k8s.io/v1beta1
+kind: ReferenceGrant
+metadata:
+  name: {{ include "emporium-docs.fullname" . }}-from-{{ .Values.referenceGrant.fromNamespace }}
+  labels:
+    {{- include "emporium-docs.labels" . | nindent 4 }}
+spec:
+  from:
+    - group: gateway.networking.k8s.io
+      kind: HTTPRoute
+      namespace: {{ .Values.referenceGrant.fromNamespace }}
+  to:
+    - group: ""
+      kind: Service
+      name: {{ include "emporium-docs.fullname" . }}
+{{- end }}

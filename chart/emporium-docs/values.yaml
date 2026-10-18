@@ -1,0 +1,61 @@
+image:
+  repository: shitlab.docker.pkg.emporium.rocks/emporium-docs
+  tag: ""  # set per release (git tag vX.Y.Z); defaults to the chart's appVersion
+  pullPolicy: IfNotPresent
+
+imagePullSecrets: []
+
+nameOverride: ""
+fullnameOverride: ""
+
+replicaCount: 2
+
+containerPort: 8080
+
+service:
+  type: ClusterIP
+  port: 80
+
+automountServiceAccountToken: false
+
+podSecurityContext:
+  runAsNonRoot: true
+  runAsUser: 101
+  runAsGroup: 101
+  fsGroup: 101
+  seccompProfile:
+    type: RuntimeDefault
+
+containerSecurityContext:
+  allowPrivilegeEscalation: false
+  readOnlyRootFilesystem: true
+  capabilities:
+    drop:
+      - ALL
+
+resources:
+  requests:
+    cpu: 10m
+    memory: 16Mi
+  limits:
+    memory: 64Mi
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+
+# Slope Analytics. With a project key, every page loads /docs/slope-analytics.js,
+# which posts to /_a/e on the same origin: the landing page's proxy on
+# emporium.build. This chart holds no forward secret and proxies nothing.
+slope:
+  # Publishable project key of the docs' Slope environment; empty keeps analytics off.
+  projectKey: ""
+
+# The landing page owns the HTTPRoute that sends emporium.build/docs to this
+# Service. A route may only reference a Service in another namespace when that
+# namespace grants it, so this ReferenceGrant lets the route's namespace in.
+referenceGrant:
+  enabled: true
+  fromNamespace: landing

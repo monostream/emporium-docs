@@ -1,0 +1,13 @@
+image:
+  repository: shitlab.docker.pkg.emporium.rocks/emporium-docs
+  # tag: set per release by scripts/release.sh (git tag vX.Y.Z)
+  pullPolicy: IfNotPresent
+
+imagePullSecrets:
+  - name: registry-emporium
+
+slope:
+  # Publishable key of the emporium.build Slope environment, shared with the
+  # landing page, whose same-origin proxy /_a/e receives the events. Empty
+  # keeps analytics off.
+  projectKey: slp_VO2_Mhyj4PozdRcAzpTr1869sckAP8k3
