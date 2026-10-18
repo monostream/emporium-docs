@@ -2,9 +2,11 @@
 # environment with the landing page on emporium.build).
 # Check: vc slope analytics catalog check --root . --file slope-analytics.yaml
 # Push:  vc slope analytics catalog sync --file slope-analytics.yaml
+# The sync replaces the whole application catalog: the landing page events
+# (emporium/web/slope-analytics.yaml) must be in the same sync.
 # pageview (including VitePress client-side navigation, via history.pushState)
 # and outbound_click are automatic.
-application: emporium
+application: emporium-web
 events:
   docs_search_used:
     description: Opened the docs' local search (search button, Ctrl/Cmd+K or "/"); .vitepress/theme/index.ts
