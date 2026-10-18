@@ -14,7 +14,7 @@ if [ -n "$key" ]; then
         *[!A-Za-z0-9_-]*) echo "SLOPE_PROJECT_KEY has characters outside [A-Za-z0-9_-]" >&2; exit 1 ;;
     esac
     tag="<script defer src=\"/docs/slope-analytics.js\" data-project-key=\"$key\" data-endpoint=\"/_a\"></script>"
-    printf "sub_filter '</head>' '%s</head>';\nsub_filter_once on;\nsub_filter_last_modified on;\n" "$tag" > /tmp/nginx/slope.conf
+    printf "sub_filter '</head>' '%s</head>';\nsub_filter_once on;\n" "$tag" > /tmp/nginx/slope.conf
     echo "Slope Analytics enabled"
 else
     : > /tmp/nginx/slope.conf
