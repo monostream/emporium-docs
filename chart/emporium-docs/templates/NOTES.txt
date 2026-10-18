@@ -1,0 +1,8 @@
+emporium-docs serves the docs under /docs/ on Service {{ include "emporium-docs.fullname" . }}:{{ .Values.service.port }}.
+{{- if .Values.referenceGrant.enabled }}
+HTTPRoutes in namespace {{ .Values.referenceGrant.fromNamespace }} may route to it (ReferenceGrant).
+{{- end }}
+
+Try it locally:
+  kubectl -n {{ .Release.Namespace }} port-forward svc/{{ include "emporium-docs.fullname" . }} 8080:{{ .Values.service.port }}
+  open http://127.0.0.1:8080/docs/
