@@ -1,0 +1,10 @@
+# Slope Analytics event catalog for emporium.build/docs (shares its Slope
+# environment with the landing page on emporium.build).
+# Check: vc slope analytics catalog check --root . --file slope-analytics.yaml
+# Push:  vc slope analytics catalog sync --file slope-analytics.yaml
+# pageview (including VitePress client-side navigation, via history.pushState)
+# and outbound_click are automatic.
+application: emporium
+events:
+  docs_search_used:
+    description: Opened the docs' local search (search button, Ctrl/Cmd+K or "/"); .vitepress/theme/index.ts
