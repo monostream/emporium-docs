@@ -11,3 +11,10 @@ slope:
   # landing page, whose same-origin proxy /_a/e receives the events. Empty
   # keeps analytics off.
   projectKey: slp_VO2_Mhyj4PozdRcAzpTr1869sckAP8k3
+
+# The emporium-web deploy environment binds Kubernetes' `edit` role, which has
+# no Gateway API rights. The ReferenceGrant is applied once with cluster access:
+#   helm template emporium-docs chart/emporium-docs -n docs \
+#     --show-only templates/referencegrant.yaml | kubectl -n docs apply -f -
+referenceGrant:
+  enabled: false
