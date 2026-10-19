@@ -51,6 +51,13 @@ To install Emporium, run the following command. Make sure to replace the hostnam
 ## Prerequesites
 - Make sure you have [helm](https://helm.sh/docs/intro/install/) and [kubectl](https://kubernetes.io/docs/tasks/tools/) installed on your system.
 - [Cert manager](https://cert-manager.io/docs/installation/helm/) has to be installed and configured on your cluster. 
+- The [CloudNativePG operator](https://cloudnative-pg.io/documentation/current/installation_upgrade/) has to be installed on your cluster. Emporium's database runs as a CloudNativePG cluster. The Emporium CLI installs the operator for you; to install it with Helm, run:
+
+```sh
+helm upgrade --install cnpg cloudnative-pg \
+  --repo https://cloudnative-pg.github.io/charts \
+  --namespace cnpg-system --create-namespace --wait
+```
 
 ## Create Namespace
 
@@ -98,6 +105,29 @@ If you want to connect to a different Authentik instance, you can disable the in
 Then set the `identity.authentik.host` and `identity.authentik.token` variables.
 :::
 
+::: tip Already have a PostgreSQL database?
+By default, the Emporium Helm chart deploys a CloudNativePG cluster named `emporium-postgresql` for its database. Its size and storage are configured with the `postgresql.*` values.
+
+To use an existing PostgreSQL database instead, set `postgresql.enabled` to `false` and configure the connection with the `database.postgresql.*` values. No PostgreSQL extensions are required.
+
+```yaml
+postgresql:
+  enabled: false
+database:
+  postgresql:
+    host: "postgres.example.org"
+    port: 5432
+    database: "emporium"
+    user: "emporium"
+    password: "<password>"
+    # Must be empty for password to take effect, otherwise the password is
+    # read from this secret (by default the chart's own credentials secret).
+    existingSecret: ""
+```
+
+To read the password from a secret instead, leave `password` empty, set `existingSecret` to the secret's name and `existingSecretPasswordKey` to the key holding the password (default `password`).
+:::
+
 ## Verify Installation
 
 After the installation suceeds, Helm will print out the URLs where your fresh Emporium instance will be accessible.
@@ -131,6 +161,91 @@ Once logged in, you should see an emplty Emporium home screen. If that is the ca
 Congratulations! :tada:
 
 
+
+# Upgrading to CloudNativePG
+
+Earlier Emporium releases ran their database on a custom PostgreSQL image with the [`semver`](https://pgxn.org/dist/semver/) extension, deployed by the Bitnami PostgreSQL chart. Later releases run it on stock PostgreSQL 18 as a CloudNativePG cluster, which the upgrade creates **empty**. Back up your data before upgrading and restore it afterwards as described below.
+
+::: warning Use Helm for this upgrade
+Upgrade to a CloudNativePG-based release with `helm upgrade` as shown below. Don't use the in-app system update for it: the updater stays connected to the old database, which the upgrade removes, and fails.
+:::
+
+Only the tables holding your configuration are copied: repositories, SMTP configs, DNS zones and the record of applied migrations. The chart catalog is a cache that the indexer rebuilds from your repositories. Don't dump the whole old database: its `chart_versions` table uses the `semver` type, which the new PostgreSQL image doesn't have, so restoring it (or importing it with CloudNativePG's `bootstrap.initdb.import`) fails.
+
+The commands below assume the release `emporium` in the namespace `emporium`.
+
+1. Install the CloudNativePG operator as described in the [prerequisites](#prerequesites).
+
+2. Back up your configuration from the old database:
+
+   ```sh
+   kubectl -n emporium exec emporium-postgresql-0 -c postgresql -- \
+     env PGPASSWORD="$(kubectl -n emporium get secret emporium-postgresql -o jsonpath='{.data.postgres-password}' | base64 -d)" \
+     pg_dump -h 127.0.0.1 -U postgres -d emporium --data-only \
+       -t repositories -t smtp_configs -t dns_zones -t migrations \
+     > emporium-state.sql
+   ```
+
+   Check that `emporium-state.sql` contains a `COPY public.repositories` section with your repositories.
+
+3. Upgrade Emporium with Helm (not with the in-app system update). Pass your values explicitly rather than with `--reuse-values`, which would also reuse the old chart's defaults and leave the new database unconfigured:
+
+   ```sh
+   helm get values emporium -n emporium -o yaml > emporium-values.yaml
+   helm upgrade emporium emporium -n emporium \
+     --repo https://emporium.helm.pkg.emporium.rocks -f emporium-values.yaml
+   ```
+
+   Values under `emporium-postgresql` no longer have an effect; configure the new database with `postgresql.*` instead. Remove any `database.postgresql` overrides unless you use an external database.
+
+4. Wait until the database is ready and Emporium has created its tables:
+
+   ```sh
+   kubectl -n emporium wait cluster/emporium-postgresql --for=condition=Ready --timeout=10m
+   kubectl -n emporium rollout status deployment/emporium-reception
+   ```
+
+5. Restore your configuration into the new database, replacing the empty rows Emporium created:
+
+   ```sh
+   PRIMARY=$(kubectl -n emporium get pod -o name \
+     -l cnpg.io/cluster=emporium-postgresql,cnpg.io/instanceRole=primary)
+   { echo 'TRUNCATE repositories, smtp_configs, dns_zones, migrations CASCADE;'; cat emporium-state.sql; } \
+     | kubectl -n emporium exec -i "$PRIMARY" -c postgres -- \
+       psql -d emporium -v ON_ERROR_STOP=1 --single-transaction
+   ```
+
+   Do this before running a system update: without the record of applied migrations, the next update would re-run old migrations.
+
+6. Restart Emporium so the indexer re-imports the charts of your repositories:
+
+   ```sh
+   kubectl -n emporium rollout restart deployment/emporium-indexer deployment/emporium-reception
+   ```
+
+7. Once everything works, delete the old database's volume and credentials. Until then, `helm rollback` brings back the old database with its data.
+
+   ```sh
+   kubectl -n emporium delete pvc data-emporium-postgresql-0
+   kubectl -n emporium delete secret emporium-postgresql
+   ```
+
+::: info External databases
+If Emporium uses an external database, no data needs to be copied: Emporium converts its tables when it starts. Upgrade with `helm upgrade` as in step 3 and add the following to `emporium-values.yaml` so Emporium keeps using your database. Previous releases connected as `postgres` and read the password from the `postgres-password` key, while the new defaults are `emporium` and `password`:
+
+```yaml
+postgresql:
+  enabled: false
+database:
+  postgresql:
+    host: "<your database host>"
+    user: "postgres"
+    existingSecret: "<your secret, previously emporium-postgresql by default>"
+    existingSecretPasswordKey: "postgres-password"
+```
+
+Keep any other `database.postgresql` values you had set. Afterwards you can remove the `semver` extension with `DROP EXTENSION semver;`.
+:::
 
 # Uninstallation
 
