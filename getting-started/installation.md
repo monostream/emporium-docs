@@ -108,7 +108,24 @@ Then set the `identity.authentik.host` and `identity.authentik.token` variables.
 ::: tip Already have a PostgreSQL database?
 By default, the Emporium Helm chart deploys a CloudNativePG cluster named `emporium-postgresql` for its database. Its size and storage are configured with the `postgresql.*` values.
 
-To use an existing PostgreSQL database instead, set `postgresql.enabled` to `false` and configure the connection with the `database.postgresql.*` values (`host`, `port`, `database`, `user` and either `password` or `existingSecret` and `existingSecretPasswordKey`). No PostgreSQL extensions are required.
+To use an existing PostgreSQL database instead, set `postgresql.enabled` to `false` and configure the connection with the `database.postgresql.*` values. No PostgreSQL extensions are required.
+
+```yaml
+postgresql:
+  enabled: false
+database:
+  postgresql:
+    host: "postgres.example.org"
+    port: 5432
+    database: "emporium"
+    user: "emporium"
+    password: "<password>"
+    # Must be empty for password to take effect, otherwise the password is
+    # read from this secret (by default the chart's own credentials secret).
+    existingSecret: ""
+```
+
+To read the password from a secret instead, leave `password` empty, set `existingSecret` to the secret's name and `existingSecretPasswordKey` to the key holding the password (default `password`).
 :::
 
 ## Verify Installation
@@ -147,7 +164,11 @@ Congratulations! :tada:
 
 # Upgrading to CloudNativePG
 
-Earlier Emporium releases ran their database on a custom PostgreSQL image with the [`semver`](https://pgxn.org/dist/semver/) extension, deployed by the Bitnami PostgreSQL chart. Later releases run it on stock PostgreSQL as a CloudNativePG cluster, which the upgrade creates **empty**. Whether you upgrade with Helm or with the in-app system update, back up your data before upgrading and restore it afterwards as described below.
+Earlier Emporium releases ran their database on a custom PostgreSQL image with the [`semver`](https://pgxn.org/dist/semver/) extension, deployed by the Bitnami PostgreSQL chart. Later releases run it on stock PostgreSQL 18 as a CloudNativePG cluster, which the upgrade creates **empty**. Back up your data before upgrading and restore it afterwards as described below.
+
+::: warning Use Helm for this upgrade
+Upgrade to a CloudNativePG-based release with `helm upgrade` as shown below. Don't use the in-app system update for it: the updater stays connected to the old database, which the upgrade removes, and fails.
+:::
 
 Only the tables holding your configuration are copied: repositories, SMTP configs, DNS zones and the record of applied migrations. The chart catalog is a cache that the indexer rebuilds from your repositories. Don't dump the whole old database: its `chart_versions` table uses the `semver` type, which the new PostgreSQL image doesn't have, so restoring it (or importing it with CloudNativePG's `bootstrap.initdb.import`) fails.
 
@@ -167,7 +188,7 @@ The commands below assume the release `emporium` in the namespace `emporium`.
 
    Check that `emporium-state.sql` contains a `COPY public.repositories` section with your repositories.
 
-3. Upgrade Emporium, either with the in-app system update or with Helm. With Helm, pass your values explicitly rather than with `--reuse-values`, which would also reuse the old chart's defaults and leave the new database unconfigured:
+3. Upgrade Emporium with Helm (not with the in-app system update). Pass your values explicitly rather than with `--reuse-values`, which would also reuse the old chart's defaults and leave the new database unconfigured:
 
    ```sh
    helm get values emporium -n emporium -o yaml > emporium-values.yaml
@@ -194,7 +215,7 @@ The commands below assume the release `emporium` in the namespace `emporium`.
        psql -d emporium -v ON_ERROR_STOP=1 --single-transaction
    ```
 
-   Do this before running another system update: without the record of applied migrations, the next update would re-run old migrations.
+   Do this before running a system update: without the record of applied migrations, the next update would re-run old migrations.
 
 6. Restart Emporium so the indexer re-imports the charts of your repositories:
 
@@ -210,7 +231,20 @@ The commands below assume the release `emporium` in the namespace `emporium`.
    ```
 
 ::: info External databases
-If Emporium uses an external database that has the `semver` extension, no data needs to be copied: Emporium converts its tables when it starts. Afterwards you can remove the extension with `DROP EXTENSION semver;`.
+If Emporium uses an external database, no data needs to be copied: Emporium converts its tables when it starts. Upgrade with `helm upgrade` as in step 3 and add the following to `emporium-values.yaml` so Emporium keeps using your database. Previous releases connected as `postgres` and read the password from the `postgres-password` key, while the new defaults are `emporium` and `password`:
+
+```yaml
+postgresql:
+  enabled: false
+database:
+  postgresql:
+    host: "<your database host>"
+    user: "postgres"
+    existingSecret: "<your secret, previously emporium-postgresql by default>"
+    existingSecretPasswordKey: "postgres-password"
+```
+
+Keep any other `database.postgresql` values you had set. Afterwards you can remove the `semver` extension with `DROP EXTENSION semver;`.
 :::
 
 # Uninstallation

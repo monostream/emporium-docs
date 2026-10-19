@@ -57,7 +57,7 @@ Indexer is another Go service. It is responsible to import all Helm charts store
 
 ## Database
 
-Emporium stores its configuration (repositories and SMTP configs) and the chart catalog imported by Indexer in a PostgreSQL database. By default the Helm chart runs it as a [CloudNativePG](https://cloudnative-pg.io/) cluster named `emporium-postgresql`, which requires the CloudNativePG operator on the cluster. Any PostgreSQL database works instead; Emporium needs no extensions. To list chart versions in the right order, Emporium stores a sort key next to each version, computed so that comparing keys byte by byte follows [Semantic Versioning](https://semver.org/) precedence.
+Emporium stores its configuration (repositories and SMTP configs) and the chart catalog imported by Indexer in a PostgreSQL database. By default the Helm chart runs it on PostgreSQL 18 as a [CloudNativePG](https://cloudnative-pg.io/) cluster named `emporium-postgresql`, which requires the CloudNativePG operator on the cluster. Any PostgreSQL database works instead; Emporium needs no extensions. To list chart versions in the right order, Emporium stores a sort key next to each version, computed so that comparing keys byte by byte follows [Semantic Versioning](https://semver.org/) precedence.
 
 ## Builder (future work)
 
