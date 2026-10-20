@@ -69,6 +69,71 @@ Switching a zone to wildcard is refused while the issuer is not Ready or has no 
 shows the state of the wildcard Certificate. In the provider health, a zone is healthy when its issuer is usable
 (per host) or its wildcard Certificate is `Ready` (wildcard).
 
+## Wildcard ingress annotations
+
+Some clusters run tooling that requests a certificate for every Ingress TLS host, which fights
+the replicated wildcard Secret. The Helm value `providers.ingress.wildcardIngressAnnotations`
+lists annotations that Emporium puts on every app Ingress whose TLS comes from a wildcard zone,
+so you can opt those Ingresses out. Emporium itself knows no such tooling; use the annotation your
+tooling documents, for example:
+
+```yaml
+providers:
+  ingress:
+    wildcardIngressAnnotations:
+      example.com/skip-certificate: "true"
+```
+
+- They are added when an app is installed, updated or re-rendered, and only to Ingresses of
+  ingress integrations in wildcard zones. Per-host zones never get them.
+- Emporium records the keys it added in `emporium.build/wildcard-annotations`. When the value
+  changes, the zone leaves wildcard mode or the value is removed, the next update of the app sets
+  the new keys and drops the old ones. Changing the Helm value does not touch running apps by itself.
+- A chart that sets one of these keys itself keeps its own value, and Emporium does not record the
+  key. If the chart's value differs, the install or update preview shows the notice
+  `wildcard-annotation-kept`.
+- reception refuses to start when a key is reserved. Reserved are the keys that glass, shield,
+  radar or Helm read as controls: the prefixes `emporium.build/`, `meta.helm.sh/` and `helm.sh/`, and
+  `nginx.ingress.kubernetes.io/backend-protocol`. shield removes `backend-protocol` while glass
+  fronts the app, keeps it in its snapshot of the original Ingress and restores it from there, and radar
+  sets glass's upstream protocol from it. reception also refuses to start when the value is not exactly one
+  JSON object of string keys and scalar values.
+- Helm hooks do not get the annotations: Helm applies hooks exactly as the chart renders them.
+
+## App namespaces
+
+Apps are installed into `<reception.appNamespacePrefix><name>` (default `emp-<name>`)
+unless the user picks another namespace with that prefix. Emporium creates, stamps and
+deletes only namespaces with the prefix, and deletes a namespace on uninstall only when
+it created it and nothing foreign is left in it.
+
+What counts as foreign is decided object by object, and the check fails closed:
+
+- Leftovers that only exist because the app's pods were terminating are ignored when they are
+  being deleted or their owners are gone: Pods, ReplicaSets, Endpoints, EndpointSlices,
+  CiliumEndpoints, Events and the cert-manager CertificateRequests, Orders and Challenges.
+- A TLS Secret is ignored only when Emporium can prove it belongs to this install: the name was
+  recorded by the ingress provider and the Secret either carries cert-manager's issuer annotations
+  (per-host zones) or is a verified copy of the zone's wildcard Secret (the zone labels and this
+  install's labels and owner id). Wildcard Secrets never pass the cert-manager check.
+- Anything else keeps the namespace: PersistentVolumeClaims, other Secrets and ConfigMaps, CloudNativePG
+  objects and whatever you created in it. A list or discovery error keeps it too.
+- Before keeping a namespace, Emporium checks again for up to 30 seconds, so cleanup by controllers
+  (for example Gateway objects after the Ingress is gone) can finish.
+
+A kept namespace is logged by reception at WARN with `code=namespace-kept`, the app, the
+namespace and the blocking objects. The panel keeps listing them as the leftovers of the app.
+
+**Failed fresh installs.** When a first install fails, Emporium rolls it back. StatefulSet
+volume claim templates leave PersistentVolumeClaims behind after `helm uninstall`, so for a namespace
+that this install attempt created, Emporium also deletes the PVCs of the failed release before it
+deletes the namespace. A PVC counts as the release's when it carries the label
+`app.kubernetes.io/instance=<release>` or Helm's `meta.helm.sh/release-name` and
+`meta.helm.sh/release-namespace` annotations. PVCs that Emporium stamped, retained data and
+CloudNativePG volumes are never deleted. Failed updates and namespaces that existed before the
+attempt are never cleaned this way. A PVC without a release marker, for example one that an
+operator created, keeps the namespace.
+
 ## Retained data
 
 When you uninstall an app, the dialog offers "Keep data" or "Delete" for every integration that holds data

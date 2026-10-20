@@ -55,6 +55,7 @@ export default withMermaid({
         items: [
           { text: 'Providers', link: '/guides/providers' },
           { text: 'App Connections', link: '/guides/app-connections' },
+          { text: 'Operating Emporium', link: '/guides/operating' },
           { text: 'Migrate to 0.5', link: '/guides/migrate-to-0-5' },
           { text: 'Configure Repositories', link: '/guides/configure-repositories' },
           { text: 'Add Your Own Apps (0.4)', link: '/guides/add-your-own-apps' },

@@ -38,6 +38,8 @@ Note that at the time Shield rewrites the ingress target service, the proxy is n
 
 When Shield rewrites the target services of an ingress, it stores the original configuration in the `emporium.build/original-configuration` annotation. This allows Shield to reset a modified ingress to it's original state if the `emporium.build/app-name` annotation is removed.
 
+Shield only rewrites ingresses of apps that its Emporium installation owns, using the same rule as Radar: the app has a current config that names this installation (or none, for apps of earlier release candidates), and the ingress belongs to the app's Helm release. Any other ingress with the annotation is admitted unchanged. Each rewritten ingress is stamped with `emporium.build/protected-by: <namespace>/<release>`. The webhook has no `namespaceSelector`: the excluded namespaces and the Emporium annotations are `matchConditions` (Kubernetes 1.30 or newer), so ingresses without Emporium annotations never depend on Shield. See [Operating Emporium](../guides/operating#shield-and-app-ownership) for the known limits.
+
 ## Reception
 
 Reception, you guessed it, is also written in Go. It exposes a GraphQL API that is consumed by Panel. It installs, updates and uninstalls Emporium apps and lists all available apps in the catalog. Additionally it manages PVCs, lists namespaces and interacts with the database to fetch data such as E-Mail configs defined by the user.
