@@ -4,7 +4,9 @@
   "scripts": {
     "dev": "vitepress dev",
     "build": "vitepress build",
-    "preview": "vitepress preview"
+    "preview": "vitepress preview",
+    "gen:reference": "node scripts/gen-emporium-yaml.mjs",
+    "check:reference": "node scripts/gen-emporium-yaml.mjs --check"
   },
   "devDependencies": {
     "mermaid": "^11.17.2",

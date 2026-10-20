@@ -1,5 +1,9 @@
 # Storage Integration
 
+::: warning Emporium 0.4 format
+This page describes the 0.4 format. Emporium 0.5 does not accept it: the `@userSupplied` comments, `.Emporium.UserSupplied` and the DNS, OIDC, SMTP and Storage template variables are errors. See the [`emporium.yaml` reference](../emporium-yaml) and the blueprint [Migrate a chart to `emporium.yaml`](https://github.com/monostream/emporium/blob/main/docs/blueprints/migrate-chart-to-emporium-yaml.md).
+:::
+
 The Emporium storage integration allows users to configure pre-existing or create new volumes at install time for any app that has implemented it. It's useful for cases where you have an existing volume that you want to attach to a new app or where you want to keep a volume after the uninstallation of an app.
 
 ## Available Variables

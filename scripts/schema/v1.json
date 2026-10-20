@@ -1,0 +1,430 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://emporium.build/schemas/emporium/v1.json",
+  "title": "emporium.yaml (emporium.build/v1)",
+  "type": "object",
+  "required": ["apiVersion"],
+  "additionalProperties": false,
+  "properties": {
+    "apiVersion": { "const": "emporium.build/v1" },
+    "sections": { "type": "array", "items": { "$ref": "#/$defs/section" } },
+    "inputs": {
+      "type": "object",
+      "propertyNames": { "pattern": "^[A-Z][A-Za-z0-9]*$" },
+      "additionalProperties": { "$ref": "#/$defs/input" }
+    },
+    "integrations": {
+      "type": "object",
+      "propertyNames": { "pattern": "^[a-z][a-z0-9-]*$" },
+      "additionalProperties": { "$ref": "#/$defs/integration" }
+    },
+    "components": {
+      "type": "object",
+      "propertyNames": { "pattern": "^[a-z][a-z0-9-]*$" },
+      "additionalProperties": { "$ref": "#/$defs/component" }
+    },
+    "profiles": { "$ref": "#/$defs/profiles" },
+    "options": { "$ref": "#/$defs/options" },
+    "exports": {
+      "type": "object",
+      "propertyNames": { "pattern": "^[a-z][a-z0-9-]*$" },
+      "additionalProperties": { "$ref": "#/$defs/export" }
+    }
+  },
+  "$defs": {
+    "path": {
+      "$comment": "Helm --set path: segments separated by '.', a literal dot inside a segment is escaped as '\\.', '/' is allowed (annotation keys), each segment may end with one [n] index.",
+      "type": "string",
+      "pattern": "^(\\\\\\.|[A-Za-z0-9_/-])+(\\[[0-9]+\\])?(\\.(\\\\\\.|[A-Za-z0-9_/-])+(\\[[0-9]+\\])?)*$"
+    },
+    "quantity": {
+      "type": "string",
+      "pattern": "^[0-9]+(\\.[0-9]+)?(m|k|M|G|T|P|E|Ki|Mi|Gi|Ti|Pi|Ei)?$"
+    },
+    "secretKey": { "type": "string", "pattern": "^[-._a-zA-Z0-9]{1,253}$" },
+    "section": {
+      "type": "object",
+      "required": ["id", "label"],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "type": "string", "minLength": 1 },
+        "label": { "type": "string" },
+        "description": { "type": "string" }
+      }
+    },
+    "bound": {
+      "$comment": "numbers, or quantity strings for byteSize/cpu/memory (\"1Gi\", \"500m\")",
+      "type": ["number", "string"],
+      "pattern": "^[0-9]+(\\.[0-9]+)?(m|k|M|G|T|P|E|Ki|Mi|Gi|Ti|Pi|Ei)?$"
+    },
+    "input": {
+      "type": "object",
+      "required": ["type"],
+      "additionalProperties": false,
+      "properties": {
+        "label": { "type": "string" },
+        "description": { "type": "string" },
+        "type": { "enum": ["string", "secret", "integer", "number", "boolean", "enum", "byteSize", "duration", "storageClass", "cpu", "memory"] },
+        "default": {},
+        "required": { "type": "boolean" },
+        "options": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "oneOf": [
+              { "type": ["string", "number", "boolean"] },
+              {
+                "type": "object",
+                "required": ["value"],
+                "additionalProperties": false,
+                "properties": { "value": { "type": ["string", "number", "boolean"] }, "label": { "type": "string" } }
+              }
+            ]
+          }
+        },
+        "min": { "$ref": "#/$defs/bound" },
+        "max": { "$ref": "#/$defs/bound" },
+        "pattern": { "type": "string" },
+        "path": { "$ref": "#/$defs/path" },
+        "ref": {
+          "type": "object",
+          "required": ["namePath"],
+          "additionalProperties": false,
+          "properties": {
+            "namePath": { "$ref": "#/$defs/path" },
+            "keyPath": { "$ref": "#/$defs/path" },
+            "key": { "$ref": "#/$defs/secretKey" }
+          }
+        },
+        "section": { "type": "string" },
+        "installOnly": { "type": "boolean" },
+        "growOnly": { "type": "boolean" },
+        "generate": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "length": { "type": "integer", "minimum": 8, "maximum": 256 },
+            "charset": { "enum": ["alnum", "hex", "base64", "printable"] }
+          }
+        },
+        "renamedFrom": { "type": "array", "items": { "type": "string", "minLength": 1 } },
+        "showIf": {
+          "type": "object",
+          "required": ["input", "equals"],
+          "additionalProperties": false,
+          "properties": { "input": { "type": "string" }, "equals": {} }
+        },
+        "matrix": { "type": "boolean" }
+      },
+      "not": { "required": ["path", "ref"] },
+      "allOf": [
+        { "if": { "properties": { "type": { "const": "enum" } } }, "then": { "required": ["options"] } },
+        { "if": { "required": ["generate"] }, "then": { "properties": { "type": { "const": "secret" } } } },
+        { "if": { "required": ["ref"] }, "then": { "properties": { "type": { "const": "secret" } } } },
+        {
+          "if": { "properties": { "type": { "enum": ["byteSize", "cpu", "memory"] } } },
+          "then": { "properties": { "default": { "$ref": "#/$defs/quantity" } } }
+        }
+      ]
+    },
+    "integration": {
+      "type": "object",
+      "required": ["type"],
+      "properties": {
+        "type": { "enum": ["ingress", "oidc", "smtp", "storage", "postgres", "redis", "objectStorage", "app"] },
+        "required": { "type": "boolean" },
+        "bind": {
+          "type": "object",
+          "propertyNames": { "pattern": "^[A-Z][A-Za-z0-9]*$" },
+          "additionalProperties": { "$ref": "#/$defs/path" }
+        }
+      },
+      "allOf": [
+        { "if": { "properties": { "type": { "const": "ingress" } } }, "then": { "$ref": "#/$defs/params/ingress" } },
+        { "if": { "properties": { "type": { "const": "oidc" } } }, "then": { "$ref": "#/$defs/params/oidc" } },
+        { "if": { "properties": { "type": { "const": "smtp" } } }, "then": { "$ref": "#/$defs/params/smtp" } },
+        { "if": { "properties": { "type": { "const": "storage" } } }, "then": { "$ref": "#/$defs/params/storage" } },
+        { "if": { "properties": { "type": { "const": "postgres" } } }, "then": { "$ref": "#/$defs/params/postgres" } },
+        { "if": { "properties": { "type": { "const": "redis" } } }, "then": { "$ref": "#/$defs/params/redis" } },
+        { "if": { "properties": { "type": { "const": "objectStorage" } } }, "then": { "$ref": "#/$defs/params/objectStorage" } },
+        { "if": { "properties": { "type": { "const": "app" } } }, "then": { "$ref": "#/$defs/params/app" } }
+      ],
+      "unevaluatedProperties": false,
+      "$comment": "Type-specific params sit next to type/required/bind. Unknown keys of a type are rejected through unevaluatedProperties; providers validate the values again at compile time (ParamValidator)."
+    },
+    "params": {
+      "ingress": {
+        "properties": {
+          "hosts": { "type": "array", "items": { "type": "string", "pattern": "^[a-z][a-z0-9-]*$" } },
+          "redirectPaths": { "type": "array", "items": { "type": "string", "pattern": "^/" } },
+          "access": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": { "default": { "enum": ["public", "authenticated", "admins"] } }
+          },
+          "skipPaths": { "type": "array", "items": { "type": "string" } },
+          "disableGlass": { "type": "boolean" }
+        }
+      },
+      "oidc": {
+        "properties": {
+          "adminScope": { "type": "boolean" },
+          "scopes": { "type": "array", "items": { "type": "string" } },
+          "ingress": { "type": "string", "pattern": "^[a-z][a-z0-9-]*$" }
+        }
+      },
+      "smtp": { "properties": {} },
+      "storage": {
+        "properties": {
+          "size": { "$ref": "#/$defs/sizeParam" },
+          "accessModes": { "type": "array", "items": { "enum": ["ReadWriteOnce", "ReadWriteMany", "ReadOnlyMany", "ReadWriteOncePod"] } },
+          "storageClass": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": { "default": { "type": "string" } }
+          }
+        }
+      },
+      "postgres": {
+        "$comment": "W1 Requirement vocabulary. Reserved for later versions and rejected: image, sharedPreloadLibraries, roles, postInitSQL, superuser.",
+        "properties": {
+          "database": { "type": "string", "pattern": "^[a-z_][a-z0-9_]{0,62}$" },
+          "owner": { "type": "string", "pattern": "^[a-z_][a-z0-9_]{0,62}$" },
+          "version": { "enum": ["14", "15", "16", "17", "18"] },
+          "extensions": { "type": "array", "items": { "type": "string", "pattern": "^[a-z_][a-z0-9_-]{0,62}$" } },
+          "storage": { "$ref": "#/$defs/sizeParam" },
+          "instances": { "type": "integer", "minimum": 1, "maximum": 5 },
+          "parameters": { "type": "object", "additionalProperties": { "type": ["string", "number"] } },
+          "resources": { "$ref": "#/$defs/resources" },
+          "secretKeys": {
+            "type": "object",
+            "propertyNames": { "pattern": "^[-._a-zA-Z0-9]{1,253}$" },
+            "additionalProperties": {
+              "enum": ["username", "user", "password", "dbname", "host", "port", "uri", "jdbc-uri", "fqdn-uri", "fqdn-jdbc-uri", "pgpass", "uri-sslmode-require", "jdbc-uri-nocreds"]
+            }
+          }
+        }
+      },
+      "redis": {
+        "properties": {
+          "mode": { "enum": ["persistent", "cache"] },
+          "size": { "$ref": "#/$defs/quantity" },
+          "maxMemory": { "$ref": "#/$defs/quantity" },
+          "secretKeys": { "$ref": "#/$defs/secretKeys" }
+        }
+      },
+      "objectStorage": {
+        "properties": {
+          "buckets": { "type": "array", "minItems": 1, "items": { "type": "string", "pattern": "^[a-z0-9][a-z0-9.-]{1,61}[a-z0-9]$" } },
+          "size": { "$ref": "#/$defs/quantity" },
+          "secretKeys": { "$ref": "#/$defs/secretKeys" }
+        }
+      },
+      "app": {
+        "required": ["capability"],
+        "properties": {
+          "capability": { "$ref": "#/$defs/capability" },
+          "permission": { "type": "string", "pattern": "^[a-z][a-z0-9-]*$" },
+          "requires": {
+            "type": "object",
+            "propertyNames": { "pattern": "^[A-Z][A-Za-z0-9]*$" },
+            "additionalProperties": {
+              "oneOf": [
+                { "type": ["string", "boolean", "integer"] },
+                {
+                  "type": "object",
+                  "required": ["sameAs"],
+                  "additionalProperties": false,
+                  "properties": { "sameAs": { "type": "string", "pattern": "^[a-z][a-z0-9-]*$" } }
+                }
+              ]
+            }
+          }
+        }
+      }
+    },
+    "capability": { "type": "string", "pattern": "^[a-z0-9][a-z0-9.-]*/v[0-9]+$" },
+    "export": {
+      "type": "object",
+      "required": ["capability", "service", "ports", "grantsPath"],
+      "additionalProperties": false,
+      "properties": {
+        "capability": { "$ref": "#/$defs/capability" },
+        "label": { "type": "string" },
+        "service": { "type": "string", "minLength": 1 },
+        "ports": {
+          "type": "object",
+          "minProperties": 1,
+          "propertyNames": { "pattern": "^[a-z][a-zA-Z0-9]*$" },
+          "additionalProperties": { "type": "integer", "minimum": 1, "maximum": 65535 }
+        },
+        "facts": {
+          "type": "object",
+          "propertyNames": { "pattern": "^[A-Z][A-Za-z0-9]*$" },
+          "additionalProperties": {
+            "type": "object",
+            "required": ["type", "value"],
+            "additionalProperties": false,
+            "properties": {
+              "type": { "enum": ["string", "boolean", "integer"] },
+              "value": { "type": ["string", "boolean", "integer"] },
+              "immutable": { "type": "boolean" }
+            }
+          }
+        },
+        "outputs": {
+          "type": "object",
+          "propertyNames": { "pattern": "^[A-Z][A-Za-z0-9]*$" },
+          "additionalProperties": { "type": "string" }
+        },
+        "permissions": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": { "type": "string", "pattern": "^[a-z][a-z0-9-]*$" }
+        },
+        "grantsPath": { "$ref": "#/$defs/path" },
+        "grantRestarts": { "type": "boolean" },
+        "credentials": {
+          "type": "object",
+          "required": ["kind"],
+          "properties": { "kind": { "enum": ["none", "rpcauth", "exported"] } },
+          "allOf": [
+            {
+              "if": { "properties": { "kind": { "enum": ["none", "rpcauth"] } } },
+              "then": { "properties": { "kind": true }, "additionalProperties": false }
+            },
+            {
+              "if": { "properties": { "kind": { "const": "exported" } } },
+              "then": {
+                "required": ["secret", "keys"],
+                "additionalProperties": false,
+                "properties": {
+                  "kind": true,
+                  "secret": { "type": "string", "minLength": 1 },
+                  "keys": {
+                    "type": "object",
+                    "minProperties": 1,
+                    "propertyNames": { "pattern": "^[A-Z][A-Za-z0-9]*$" },
+                    "additionalProperties": {
+                      "oneOf": [
+                        { "$ref": "#/$defs/secretKey" },
+                        {
+                          "type": "object",
+                          "minProperties": 1,
+                          "propertyNames": { "pattern": "^[a-z][a-z0-9-]*$" },
+                          "additionalProperties": { "$ref": "#/$defs/secretKey" }
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          ]
+        }
+      }
+    },
+    "sizeParam": {
+      "oneOf": [
+        { "$ref": "#/$defs/quantity" },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": { "default": { "$ref": "#/$defs/quantity" }, "growOnly": { "type": "boolean" } }
+        }
+      ]
+    },
+    "secretKeys": {
+      "type": "object",
+      "propertyNames": { "pattern": "^[-._a-zA-Z0-9]{1,253}$" },
+      "additionalProperties": { "type": "string", "minLength": 1 }
+    },
+    "resources": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": { "requests": { "$ref": "#/$defs/resourceList" }, "limits": { "$ref": "#/$defs/resourceList" } }
+    },
+    "resourceList": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": { "cpu": { "$ref": "#/$defs/quantity" }, "memory": { "$ref": "#/$defs/quantity" } }
+    },
+    "component": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "label": { "type": "string" },
+        "resources": { "$ref": "#/$defs/path" },
+        "replicas": {
+          "oneOf": [
+            {
+              "type": "object",
+              "required": ["path"],
+              "additionalProperties": false,
+              "properties": { "path": { "$ref": "#/$defs/path" }, "min": { "type": "integer", "minimum": 0 }, "max": { "type": "integer", "minimum": 1 } }
+            },
+            {
+              "type": "object",
+              "required": ["minPath", "maxPath"],
+              "additionalProperties": false,
+              "properties": { "minPath": { "$ref": "#/$defs/path" }, "maxPath": { "$ref": "#/$defs/path" }, "min": { "type": "integer", "minimum": 0 }, "max": { "type": "integer", "minimum": 1 } }
+            },
+            {
+              "type": "object",
+              "required": ["fixed"],
+              "additionalProperties": false,
+              "properties": { "fixed": { "type": "integer", "minimum": 0 }, "reason": { "type": "string" } }
+            }
+          ]
+        },
+        "storage": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": { "path": { "$ref": "#/$defs/path" }, "input": { "type": "string" }, "installOnly": { "type": "boolean" } },
+          "oneOf": [{ "required": ["path"] }, { "required": ["input"] }]
+        },
+        "enabled": { "$ref": "#/$defs/path" },
+        "parent": { "type": "string" },
+        "perNode": { "type": "boolean" },
+        "integration": { "type": "string" },
+        "knobs": { "type": "array", "items": { "type": "string" } },
+        "needsRWX": { "type": "boolean" },
+        "match": {
+          "type": "object",
+          "additionalProperties": false,
+          "minProperties": 1,
+          "properties": {
+            "kind": { "type": "string" },
+            "name": { "type": "string" },
+            "matchLabels": { "type": "object", "additionalProperties": { "type": "string" } }
+          }
+        }
+      }
+    },
+    "profiles": {
+      "type": "object",
+      "propertyNames": { "pattern": "^[a-z][a-z0-9-]*$" },
+      "properties": { "default": { "type": "string" } },
+      "additionalProperties": {
+        "type": "object",
+        "required": ["values"],
+        "additionalProperties": false,
+        "properties": {
+          "label": { "type": "string" },
+          "description": { "type": "string" },
+          "values": { "type": "string", "pattern": "^profiles/[a-z0-9-]+\\.ya?ml$" },
+          "integrations": { "type": "object", "additionalProperties": { "type": "object" } }
+        }
+      }
+    },
+    "options": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "installTimeout": { "type": "string", "pattern": "^[0-9]+(s|m|h)$" },
+        "requiredCRDs": { "type": "array", "items": { "type": "string", "pattern": "^[a-z0-9.-]+\\.[a-z0-9.-]+$" } }
+      }
+    }
+  }
+}

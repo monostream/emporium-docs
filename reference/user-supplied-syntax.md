@@ -1,5 +1,9 @@
 # `@userSupplied` Syntax
 
+::: warning Emporium 0.4 format
+This page describes the 0.4 format. Emporium 0.5 does not accept it: the `@userSupplied` comments, `.Emporium.UserSupplied` and the DNS, OIDC, SMTP and Storage template variables are errors. See the [`emporium.yaml` reference](./emporium-yaml) and the blueprint [Migrate a chart to `emporium.yaml`](https://github.com/monostream/emporium/blob/main/docs/blueprints/migrate-chart-to-emporium-yaml.md).
+:::
+
 The `@userSupplied` syntax employs tags that permit app developers to indicate specific variables in the `values.emporium.yaml` as supplied by the user. Emporium then generates corresponding input fields on the app installation screen.
 
 Every line should begin with `##` to be parsed. Every variable block should commence with `@userSupplied`. Subsequent tags are considered up to the next `@userSupplied` tag or the end of the file. The order of variable blocks doesn't affect the outcome. The variable name specified in `@userSupplied [variable name]` should match the usage in the template (`.Emporium.UserSupplied.[variable name]`).
