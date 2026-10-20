@@ -1,5 +1,9 @@
 # Add Your Own Apps
 
+::: warning Emporium 0.4 format
+This page describes the 0.4 format. Emporium 0.5 does not accept it: the `@userSupplied` comments, `.Emporium.UserSupplied` and the DNS, OIDC, SMTP and Storage template variables are errors. See the [`emporium.yaml` reference](../reference/emporium-yaml) and the blueprint [Migrate a chart to `emporium.yaml`](https://github.com/monostream/emporium/blob/main/docs/blueprints/migrate-chart-to-emporium-yaml.md).
+:::
+
 An App is a Helm chart that has been preconfigured with a distinctive [`values.emporium.yaml` file](../reference/values-emporium-yaml).
 
 This file interfaces with Emporium and facilitates dynamic UI rendering based on necessary configuration variables. Here's a comprehensive guide to help you get your app ready for Emporium.

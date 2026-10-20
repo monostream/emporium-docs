@@ -5,6 +5,8 @@ export default withMermaid({
   title: 'Emporium Docs',
   description: 'A user-friendly, self-hosted platform that lets you deploy pre-configured apps and services in a snap.',
   base: '/docs/',
+  // scripts/ holds the page generators and their templates, not pages.
+  srcExclude: ['scripts/**'],
   // head entries are not base-aware, so the icon path carries /docs/ itself.
   head: [['link', { rel: 'icon', href: '/docs/favicon.ico' }]],
   sitemap: {
@@ -33,10 +35,11 @@ export default withMermaid({
       {
         text: 'Reference',
         items: [
-          { text: 'values.emporium.yaml File', link: '/reference/values-emporium-yaml' },
-          { text: '@userSupplied Syntax', link: '/reference/user-supplied-syntax' },
+          { text: 'emporium.yaml', link: '/reference/emporium-yaml' },
+          { text: 'values.emporium.yaml File (0.4)', link: '/reference/values-emporium-yaml' },
+          { text: '@userSupplied Syntax (0.4)', link: '/reference/user-supplied-syntax' },
           {
-            text: 'Integrations',
+            text: 'Integrations (0.4)',
             collapsed: true,
             items: [
               { text: 'DNS', link: '/reference/integrations/dns' },
@@ -50,8 +53,11 @@ export default withMermaid({
       {
         text: 'Guides',
         items: [
+          { text: 'Providers', link: '/guides/providers' },
+          { text: 'App Connections', link: '/guides/app-connections' },
+          { text: 'Migrate to 0.5', link: '/guides/migrate-to-0-5' },
           { text: 'Configure Repositories', link: '/guides/configure-repositories' },
-          { text: 'Add Your Own Apps', link: '/guides/add-your-own-apps' },
+          { text: 'Add Your Own Apps (0.4)', link: '/guides/add-your-own-apps' },
           { text: 'Configure Login Providers', link: '/guides/configuring-login-providers' },
           {
             text: 'Homeserver Setup',

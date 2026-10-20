@@ -1,57 +1,27 @@
 # Installation
 
-Follow this guide to install Emporium on your Kubernetes cluster using Helm.
+Follow this guide to install Emporium 0.5 on your Kubernetes cluster.
 
 ::: danger 
 
 **Disclaimer:** By installing Emporium, you acknowledge and accept that the process and its outcomes are solely your responsibility. Emporium is currently in its alpha stage and may contain bugs. We do not assume liability for any issues, data loss, or other adverse events that may occur. Use at your own risk.
 :::
 
-# Install with Emporium CLI
-We recommend using the **Emporium CLI** to install Emporium.
+## Prerequisites
 
-Grab the **Emporium CLI** with this command:
+| Prerequisite | Why |
+|---|---|
+| Kubernetes 1.30 or newer with an ingress controller | Apps and the Emporium panel are exposed through Ingresses |
+| [cert-manager](https://cert-manager.io/docs/installation/helm/) with a ClusterIssuer | TLS certificates. Wildcard certificates need an issuer with a DNS-01 solver, see [Zone TLS modes](../guides/providers#zone-tls-modes) |
+| [CloudNativePG](https://cloudnative-pg.io/documentation/current/installation_upgrade/) operator | Emporium's own database and the PostgreSQL databases of apps. Version 1.26 or newer is needed to add extensions to an existing app database |
+| A dedicated [Logto](https://logto.io/) (OSS 1.45 or newer) | Identity provider for the panel and for the apps |
+| [helm](https://helm.sh/docs/intro/install/) and [kubectl](https://kubernetes.io/docs/tasks/tools/) | Installing and inspecting |
 
-```sh
-curl https://cli.emporium.build/ | sh
-```
+The Emporium CLI offers to install cert-manager and the CloudNativePG operator when they are missing.
+Logto is never installed by Emporium. Use a Logto that serves only Emporium: Emporium owns part of its
+tenant-wide configuration.
 
-Execute **emp install** and follow the instructions:
-```sh
-➜  ~ emp install   
-✨ Cluster detected: supercluster
-✗ Is there an existing Authentik instance you wish to integrate with Emporium?: 
-What FQDN should be used to access Authentik? (e.g., id.example.org): id.emporium.app
-What FQDN should be used for Emporium's access? (e.g., emporium.example.org): emporium.app
-Which Kubernetes Namespace do you prefer for installing Emporium? (default: emporium): emporium
-⏳ Installing Emporium on cluster supercluster. This might take a few minutes...
-✅ Emporium installation complete on supercluster.
-
-Access Emporium:
-
-Emporium URL: https://emporium.app
-Authentik Username: akadmin
-Authentik Bootstrap Password: Z3i1alwkfU0OaM2PS4YDI42XkdHlYp3ro
-
-The 'akadmin' user is for initial testing only. Create a personal account or configure a social login for production use.
-Change the 'akadmin' password immediately after first login.
-
-You might encounter a temporary DNS error as the newly created domain resolves. Please wait a few minutes and try again.
-If you see an empty Emporium home screen, the installation is successful!
-Follow the Emporium Docs to add repositories: https://emporium.build/docs/guides/configure-repositories.html
-
-```
-
-
-# Install with Helm Chart
-
-To install Emporium, run the following command. Make sure to replace the hostnames with your own domains.
-
-
-## Prerequesites
-- Make sure you have [helm](https://helm.sh/docs/intro/install/) and [kubectl](https://kubernetes.io/docs/tasks/tools/) installed on your system.
-- [Cert manager](https://cert-manager.io/docs/installation/helm/) has to be installed and configured on your cluster. 
-- The [CloudNativePG operator](https://cloudnative-pg.io/documentation/current/installation_upgrade/) has to be installed on your cluster. Emporium's database runs as a CloudNativePG cluster. The Emporium CLI installs the operator for you; to install it with Helm, run:
+To install the operator with Helm:
 
 ```sh
 helm upgrade --install cnpg cloudnative-pg \
@@ -59,50 +29,60 @@ helm upgrade --install cnpg cloudnative-pg \
   --namespace cnpg-system --create-namespace --wait
 ```
 
-## Create Namespace
+### Set up Logto
 
-While not strictly necessary, it's recommended to create a separate namespace for Emporium.
+1. Install Logto and make its endpoint (for example `https://id.example.com`) reachable over HTTPS by
+   browsers and by the cluster. The OIDC issuer is `<endpoint>/oidc`.
+2. In the Logto admin console, create a **Machine-to-machine** application (for example `emporium`)
+   and assign it the role **Logto Management API access**.
+3. Store its credentials in a Secret in Emporium's namespace:
+
+   ```sh
+   kubectl create namespace emporium
+   kubectl -n emporium create secret generic emporium-logto \
+     --from-literal=LOGTO_ENDPOINT=https://id.example.com \
+     --from-literal=LOGTO_M2M_APP_ID=<app id> \
+     --from-literal=LOGTO_M2M_APP_SECRET=<app secret>
+   ```
+
+On every start, Emporium brings Logto to its baseline: an API resource with the scopes `user` and
+`admin`, the roles `emporium-user` (the default role of every new user) and `emporium-admin`, a claims
+script for access tokens, and sign-in only mode. Self sign-up is switched off, so you create users in the
+Logto console. Assign `emporium-admin` to the users who manage Emporium.
+
+## Install with the Emporium CLI
+
+Get the CLI and run the installer:
 
 ```sh
-kubectl create ns emporium
+curl https://cli.emporium.build/ | sh
+emp install
 ```
 
+`emp install` checks the cluster, offers to install missing prerequisites, checks that the Logto Secret
+works, asks for the hostname of Emporium, the DNS zone for apps and the namespace (default `emporium`),
+and installs the Helm chart. Pass `--logto-secret` or `--logto-endpoint` if your Secret has another name or
+lacks the endpoint.
 
-::: info
-The complete installation usually takes about 5 minutes.
-:::
+## Install with Helm
+
+Replace the host names with your own.
 
 ```sh
 helm install emporium emporium -n emporium --repo https://emporium.helm.pkg.emporium.rocks -f - << EOF
+initialDnsZone: "example.com"
 panel:
   ingress:
-    host: "emporium.build"
+    host: "emporium.example.com"
 releaseChannel: "stable"
-identity:
-  authentik:
-    host: "id.emporium.build"
-
-authentik:
-  server:
-    ingress:
-      hosts:
-      - id.emporium.build
-      pathType: Prefix
-      paths:
-      - /
-      tls:
-      - hosts:
-        - id.emporium.build
-        secretName: authentik-tls
 EOF
 ```
 
-::: tip Already have an Authentik instance?
-By default, the Emporium Helm chart comes bundeled with an Authentik instance for identity management.
+`initialDnsZone` and `panel.ingress.host` are required. The chart does not install any prerequisite. To
+pick the ingress class of app Ingresses, see [Providers](../guides/providers#ingress-class).
 
-If you want to connect to a different Authentik instance, you can disable the included instance by setting `authentik.enabled` to `false`.
-
-Then set the `identity.authentik.host` and `identity.authentik.token` variables.
+::: info
+The complete installation usually takes about 5 minutes.
 :::
 
 ::: tip Already have a PostgreSQL database?
@@ -130,7 +110,7 @@ To read the password from a secret instead, leave `password` empty, set `existin
 
 ## Verify Installation
 
-After the installation suceeds, Helm will print out the URLs where your fresh Emporium instance will be accessible.
+After the installation succeeds, Helm prints the URL of your Emporium.
 
 ```text {3}
 ...
@@ -139,27 +119,16 @@ https://[emporium.example.org]
 ...
 ```
 
-On visiting this URL you will be greeted by a login page from Authentik. If you get a DNS error, please note that the DNS resolution of the freshly created domain might take some time. Patience is your friend.
+Open it. You are sent to Logto to sign in. If you get a DNS error, the new domain may still be
+resolving; wait a few minutes. A user needs the role `emporium-user` to open the panel and `emporium-admin`
+to see the settings. New users get the first role automatically; assign the second one in the Logto console.
 
-For initial testing purposes, you can use the `akadmin` user to log in. Make sure to create your personal user or configure a social login provider for production use.
+Open Settings, Providers. Every provider should be healthy. A red provider names the missing prerequisite,
+for example the CloudNativePG operator. See [Providers](../guides/providers).
 
-To get the password for `akadmin`, execute the following command.
+Add a repository next: [Configure Repositories](../guides/configure-repositories).
 
-```sh
-kubectl get secret \
-  --namespace emporium \
-  -o jsonpath="{.data.AUTHENTIK_BOOTSTRAP_PASSWORD}" \
-  emporium-authentik | base64 --decode; echo
-```
-
-::: info
-It's recommended to change the password of `akadmin` after you logged in for the first time.
-:::
-
-Once logged in, you should see an emplty Emporium home screen. If that is the case, you successfully installed Emporium.
-
-Congratulations! :tada:
-
+Coming from 0.4? Apps installed by 0.4 are not updated. See [Migrate to 0.5](../guides/migrate-to-0-5).
 
 
 # Upgrading to CloudNativePG
@@ -174,7 +143,7 @@ Only the tables holding your configuration are copied: repositories, SMTP config
 
 The commands below assume the release `emporium` in the namespace `emporium`.
 
-1. Install the CloudNativePG operator as described in the [prerequisites](#prerequesites).
+1. Install the CloudNativePG operator as described in the [prerequisites](#prerequisites).
 
 2. Back up your configuration from the old database:
 
