@@ -64,7 +64,7 @@ errors in full with secrets redacted.
 Helm stores each release in a Secret that the API server limits to 1 MiB. Emporium measures the
 release record exactly as Helm stores it (chart files including `assets/`, values, manifest, hooks and
 notes, compressed) before it stores anything. If the record is over 960 KiB, the install or update fails
-with `chart-too-large`, and nothing is changed. `emp chart lint` reports the same as `chart-size`
+with `chart-too-large`. This keeps Helm from writing the release; an install or update can still have changed its config, Secrets or provider objects (a failed install is rolled back) by the time a size failure shows. `emp chart lint` reports the same as `chart-size`
 (an error when the install would refuse the chart, a warning above 683 KiB). Emporium does not
 strip files from charts: the chart must be made smaller, by moving large files out of the chart or
 listing them in `.helmignore`.
