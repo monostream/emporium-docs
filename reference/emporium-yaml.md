@@ -58,10 +58,10 @@ An input is a value the user can set in the install form. Fields of one input:
 |---|---|---|---|
 | `label` | string | no | Form label. |
 | `description` | string | no | Help text under the field. |
-| `type` | `secret` | yes | Value type. `secret` values are never returned by the API. `byteSize`, `cpu` and `memory` take quantities such as `1Gi` or `500m`. |
-| `default` | quantity | no | Default value, shown in the form. |
+| `type` | `string`, `secret`, `integer`, `number`, `boolean`, `enum`, `byteSize`, `duration`, `storageClass`, `cpu`, `memory` | yes | Value type. `secret` values are never returned by the API. `byteSize`, `cpu` and `memory` take quantities such as `1Gi` or `500m`. |
+| `default` | any | no | Default value, shown in the form. It must fit the input `type`; for `byteSize`, `cpu` and `memory` it is a quantity. |
 | `required` | boolean | no | The form needs a value. Default `false`. |
-| `options` | list of string or number or boolean or map (at least 1 item) | yes | Choices of an `enum` input: plain values, or `{value, label}`. Required for `enum`. |
+| `options` | list of string or number or boolean or map (at least 1 item) | no | Choices of an `enum` input: plain values, or `{value, label}`. Required for `enum`. |
 | `min` | number or quantity | no | Lower bound. A number, or a quantity for `byteSize`, `cpu` and `memory`. |
 | `max` | number or quantity | no | Upper bound, same forms as `min`. |
 | `pattern` | string | no | Regular expression a string value must match. |
@@ -102,7 +102,7 @@ Fields of every integration:
 
 | Field | Type | Required | Description |
 |---|---|---|---|
-| `type` | `ingress`, `oidc`, `smtp`, `storage`, `postgres`, `redis`, `objectStorage`, `app` | no | Integration type. Each type has its own parameters, listed below. |
+| `type` | `ingress`, `oidc`, `smtp`, `storage`, `postgres`, `redis`, `objectStorage`, `app` | yes | Integration type. Each type has its own parameters, listed below. |
 | `required` | boolean | no | Whether the app needs the integration. Default `true`. An optional integration adds an `enabled` switch to the install form. |
 | `bind` | map (keys `^[A-Z][A-Za-z0-9]*$`) | no | Sets chart values from integration outputs without a template: output name to values path. The output must exist for the type. Do not bind secret outputs. |
 
@@ -263,8 +263,8 @@ for how the pieces work together.
 | `grantRestarts` | boolean | no | The producer restarts when its consumers change. The panel warns before a consumer is connected or removed. |
 | `credentials` | map | no | How consumers authenticate. Default `{kind: none}`. |
 | &nbsp;&nbsp;`kind` | `none`, `rpcauth`, `exported` | yes | `none`: network access only. `rpcauth`: Emporium creates a user and password per consumer and passes the hash in the grant. `exported`: the chart publishes a Secret and Emporium copies the listed keys to each consumer. |
-| &nbsp;&nbsp;`secret` | string (not empty) | yes | Template for the name of the Secret the chart renders without data. Required for `exported`. |
-| &nbsp;&nbsp;`keys` | map (at least 1 entry; keys `^[A-Z][A-Za-z0-9]*$`) | yes | Output name to source key in that Secret, or to a map from permission to source key. Required for `exported`. |
+| &nbsp;&nbsp;`secret` | string (not empty) | no | Template for the name of the Secret the chart renders without data. Required for `exported`. |
+| &nbsp;&nbsp;`keys` | map (at least 1 entry; keys `^[A-Z][A-Za-z0-9]*$`) | no | Output name to source key in that Secret, or to a map from permission to source key. Required for `exported`. |
 
 Rules the schema cannot express are checked by `emp chart lint`: the `grantsPath` list must exist in
 `values.yaml`, the chart must render the Service named by `service` with every port, and a profile or

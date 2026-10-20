@@ -41,7 +41,9 @@ It is written for an operator or an AI agent and migrates one app at a time:
 2. Take a verified backup: a database dump with row counts, copies of the volumes, and the Kubernetes and Helm state.
 3. Protect old volumes so that `helm uninstall` does not delete them.
 4. Preview the 0.5 install, uninstall the 0.4 app, and install the 0.5 app **on hold**. On hold, Emporium
-   creates the new database and installs the app with every workload scaled to zero.
+   creates the new database and installs the app with its Deployments and StatefulSets scaled to zero and
+   its CronJobs suspended. Jobs, DaemonSets, standalone Pods and Helm hooks are not stopped by the hold. Check
+   them separately and disable any that can write.
 5. Restore the dump and the volumes into the new app and compare row counts.
 6. Release the hold, verify the app with a person who knows the data, and clean up only after they confirm.
 
@@ -52,7 +54,8 @@ reinstalls the old chart from the backups made in step 2.
 
 The migration relies on one 0.5 feature that you can also use directly: uninstalling an app with "Keep data".
 The data is not deleted but marked as retained, and a reinstall under the same name is refused until the
-retained object is deleted. See [Retained data](./providers#retained-data).
+retained object is deleted, except that a storage volume can be reused on purpose as an existing claim. See
+[Retained data](./providers#retained-data).
 
 ## Chart authors
 

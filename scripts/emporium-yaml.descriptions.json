@@ -13,7 +13,7 @@
   "input: label": "Form label.",
   "input: description": "Help text under the field.",
   "input: type": "Value type. `secret` values are never returned by the API. `byteSize`, `cpu` and `memory` take quantities such as `1Gi` or `500m`.",
-  "input: default": "Default value, shown in the form.",
+  "input: default": "Default value, shown in the form. It must fit the input `type`; for `byteSize`, `cpu` and `memory` it is a quantity.",
   "input: required": "The form needs a value. Default `false`.",
   "input: options": "Choices of an `enum` input: plain values, or `{value, label}`. Required for `enum`.",
   "input: min": "Lower bound. A number, or a quantity for `byteSize`, `cpu` and `memory`.",

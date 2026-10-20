@@ -90,8 +90,10 @@ function props(node) {
   for (const part of n.allOf || []) {
     if (part.then) {
       const t = deref(part.then);
-      for (const [k, v] of Object.entries(t.properties || {})) if (!(k in out) || v !== true) out[k] = v;
-      for (const r of t.required || []) required.add(r);
+      // Conditional branches only add properties the base schema lacks. They
+      // narrow the base (type secret for generate, quantity defaults) and must
+      // not replace it; their required lists are conditional and are not shown.
+      for (const [k, v] of Object.entries(t.properties || {})) if (!(k in out)) out[k] = v;
     }
   }
   const alt = n.oneOf && n.oneOf.every((o) => deref(o).type === 'object' || deref(o).properties) ? n.oneOf : [];
@@ -132,7 +134,7 @@ const tables = {
   top: rowsOf(schema),
   section: rowsOf(defs.section),
   input: rowsOf(defs.input),
-  integration: rowsOf({ properties: { type: defs.integration.properties.type, required: defs.integration.properties.required, bind: defs.integration.properties.bind } }),
+  integration: rowsOf({ required: defs.integration.required, properties: { type: defs.integration.properties.type, required: defs.integration.properties.required, bind: defs.integration.properties.bind } }),
   ingress: rowsOf(defs.params.ingress),
   oidc: rowsOf(defs.params.oidc),
   storage: rowsOf(defs.params.storage),

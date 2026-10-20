@@ -11,7 +11,7 @@ object it did not create and never deletes by selector.
 
 | Provider | Creates for an app | Settings | Healthy when |
 |---|---|---|---|
-| Ingress | Ingress annotations, the OIDC client of the login proxy (glass), TLS Secrets | `ingressClassName`. DNS zones and global annotations are shown but managed under Domains | Logto answers, the ingress class is usable and every zone's TLS works |
+| Ingress | Ingress annotations, the OIDC client of the login proxy (glass), TLS Secrets | none editable. The class is the Helm value `providers.ingress.ingressClassName`; DNS zones and global annotations are shown but managed under Domains | Logto answers, the ingress class is usable and every zone's TLS works |
 | OIDC | An OIDC client in Logto | none | Logto answers |
 | SMTP | Nothing. It hands out an SMTP configuration | none. Configurations live under Settings, Email | always |
 | Storage | A PersistentVolumeClaim, or uses an existing one | `defaultStorageClass` (empty: the cluster default), `allowCreate` (off: apps can only use existing claims) | the storage class exists, or the cluster has a default class |
@@ -26,16 +26,20 @@ value. The PostgreSQL health also reports whether the CloudNativePG `Database` C
 
 ## Ingress class
 
-App Ingresses get `spec.ingressClassName` from the ingress provider. The class is chosen in this order:
+App Ingresses get `spec.ingressClassName` from the ingress provider. The settings of the ingress
+provider are read-only in the panel: the class is configured with the Helm value
+`providers.ingress.ingressClassName`, which reception reads as `INGRESS_CLASS_NAME`. The class is chosen in
+this order:
 
-1. The value saved under Settings, Providers, Ingress. A saved empty value counts: it means "use the
-   cluster's default IngressClass".
-2. The Helm value `providers.ingress.ingressClassName` of the Emporium chart, which reception reads as
-   `INGRESS_CLASS_NAME`. It is never written into the saved settings, so changing it takes effect after
-   `helm upgrade`.
-3. Empty. Apps get no class and the cluster's default IngressClass applies.
+1. A class stored by an earlier version under Settings, Providers (still honoured). A stored empty value
+   counts: it means "use the cluster's default IngressClass".
+2. The Helm value `providers.ingress.ingressClassName`. It is never written into the stored settings, so
+   changing it takes effect after `helm upgrade`.
+3. The name of the cluster's default IngressClass.
+4. Empty, when none of these exists. Apps then get no class and the controller's default applies.
 
-Set `providers.ingress.ingressClassName`, for example to `nginx`, when the cluster has no default IngressClass.
+Set `providers.ingress.ingressClassName`, for example to `nginx`, when the cluster has no
+default IngressClass.
 
 The health check shows two warnings. They do not make the provider unhealthy:
 
@@ -74,11 +78,13 @@ the provider's resource list with the filter "retained". A retained PostgreSQL c
 still dump it. Redis and object storage also keep their credentials in the Secret `<app>-<integration>-retained`.
 The namespace stays.
 
-Emporium never reattaches retained data. An install is refused with the issue `retained-data` while an
-object with the name it would create is retained. Delete the retained object in the provider's resource list first.
-Only retained objects that Emporium can verify as its own can be deleted there. To reuse the data, dump it, delete
-the retained object, reinstall the app and restore the dump. Or install under a different app name and restore
-from the retained object.
+Emporium never adopts retained data automatically. Installing an app whose integration would create an object
+under the name of retained data is refused ("retained-data") until an admin deletes the retained
+object in the provider's resource list. Only retained objects that Emporium can verify as its own can be
+deleted there; objects of a running app cannot. A `storage` integration is the exception: it can reuse a
+retained PersistentVolumeClaim of its namespace on purpose, by naming it as `existingClaim`. For the other
+types, dump the data first, delete the retained object, reinstall and restore the dump. Or install under a
+different app name and restore from the retained object.
 
 An uninstall that was interrupted keeps the choices it started with. Until it is finished again, the app
 accepts nothing but the uninstall.
